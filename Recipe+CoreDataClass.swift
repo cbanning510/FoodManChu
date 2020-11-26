@@ -2,7 +2,7 @@
 //  Recipe+CoreDataClass.swift
 //  FoodManChu
 //
-//  Created by chris on 11/24/20.
+//  Created by chris on 11/25/20.
 //
 //
 

@@ -11,12 +11,12 @@
     <entity name="Recipe" representedClassName="Recipe" syncable="YES">
         <attribute name="categoryType" optional="YES" attributeType="String"/>
         <attribute name="cookingInstructions" optional="YES" attributeType="String"/>
-        <attribute name="ingredientList" optional="YES" attributeType="String"/>
+        <attribute name="ingredientList" optional="YES" attributeType="Transformable" customClassName="[String]"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="prepTime" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="summaryDescription" optional="YES" attributeType="String"/>
         <relationship name="category" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="recipe" inverseEntity="Category"/>
-        <relationship name="ingredients" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Ingredient" inverseName="recipe" inverseEntity="Ingredient"/>
+        <relationship name="ingredients" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Ingredient" inverseName="recipe" inverseEntity="Ingredient"/>
     </entity>
     <elements>
         <element name="Category" positionX="48.9765625" positionY="178.8671875" width="128" height="73"/>
