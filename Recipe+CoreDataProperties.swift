@@ -2,7 +2,7 @@
 //  Recipe+CoreDataProperties.swift
 //  FoodManChu
 //
-//  Created by chris on 11/25/20.
+//  Created by chris on 11/27/20.
 //
 //
 
@@ -18,7 +18,7 @@ extension Recipe {
 
     @NSManaged public var categoryType: String?
     @NSManaged public var cookingInstructions: String?
-    @NSManaged public var ingredientList: [String]?
+    @NSManaged public var ingredientList: [Ingredient]?
     @NSManaged public var name: String?
     @NSManaged public var prepTime: Int16
     @NSManaged public var summaryDescription: String?

@@ -21,9 +21,9 @@ class MainVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-         //generateDummyCategories()
-        // generateDummyRecipes()  // 1 - load Recipes into CoreData
-        // generateDummyIngredients() // 2 - load Ingredients into CoreData
+        //generateDummyCategories()
+        //generateDummyRecipes()  // 1 - load Recipes into CoreData
+        //generateDummyIngredients() // 2 - load Ingredients into CoreData
         attemptFetch() // 3 - populate recipes array with fetched Recipe data
         print(recipes!)
     }
@@ -52,7 +52,9 @@ extension MainVC: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellReuseId, for: indexPath) as? RecipeCell else {
             return UITableViewCell()
         }
-        configureCell(cell, indexPath: indexPath)
+        let recipe = recipes![indexPath.row]
+        //configureCell(cell, indexPath: indexPath)
+        cell.configCell(recipe)
         return cell
     }
     
@@ -60,11 +62,11 @@ extension MainVC: UITableViewDelegate, UITableViewDataSource {
         return 150
     }
     
-    func configureCell(_ cell: RecipeCell, indexPath: IndexPath) {
-        let recipe = recipes![indexPath.row]
+    //func configureCell(_ cell: RecipeCell, indexPath: IndexPath) {
+        //let recipe = recipes![indexPath.row]
         //let recipe = controller.object(at: indexPath)
-        cell.configCell(recipe)
-    }
+        //cell.configCell(recipe)
+    //}
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // if let objs = controller.fetchedObjects, objs.count > 0 {
@@ -109,12 +111,9 @@ extension MainVC: NSFetchedResultsControllerDelegate {
         recipe1.name = "Chicken Parmesan"
         recipe1.prepTime = 60
         recipe1.summaryDescription = "My favorite Italian entree"
-        recipe1.ingredientList = ["basil", "parsley", "oregano", "chicken breast"]
-//        var ingredientList = String()
-//        for ingredient in ingredients {
-//            ingredientList += ingredient + "\n"
-//        }
-//        recipe1.ingredientList = ingredientList
+//        recipe1.ingredientList = [
+//            Ingredient(context: Constants.context)
+//        ]
         
         let recipe2 = Recipe(context: Constants.context)
         recipe2.categoryType = "Vegan"

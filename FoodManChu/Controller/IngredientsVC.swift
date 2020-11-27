@@ -30,14 +30,14 @@ class IngredientsVC: UIViewController, NSFetchedResultsControllerDelegate {
         // Do any additional setup after loading the view.
     }
     
-    @IBAction func showrecipeToEditIngredientList(_ sender: UIBarButtonItem) {
-        guard let recipeToEdit = recipeToEdit else {
-            print("no recipe to edit!!!")
-            return 
-        }
-        print(recipeToEdit)
-        recipeDetailsVC?.recipeToEdit.ingredientList = ["salami"]
-    }
+//    @IBAction func showrecipeToEditIngredientList(_ sender: UIBarButtonItem) {
+//        guard let recipeToEdit = recipeToEdit else {
+//            print("no recipe to edit!!!")
+//            return 
+//        }
+//        print(recipeToEdit)
+//        recipeDetailsVC?.recipeToEdit.ingredientList = ["salami"]
+//    }
     
     func attemptIngredientFetch() {
         print("ingredient fetch!!")

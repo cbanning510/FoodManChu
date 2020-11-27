@@ -5,13 +5,14 @@
         <relationship name="recipe" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Recipe" inverseName="category" inverseEntity="Recipe"/>
     </entity>
     <entity name="Ingredient" representedClassName="Ingredient" syncable="YES">
+        <attribute name="amount" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="recipe" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Recipe" inverseName="ingredients" inverseEntity="Recipe"/>
     </entity>
     <entity name="Recipe" representedClassName="Recipe" syncable="YES">
         <attribute name="categoryType" optional="YES" attributeType="String"/>
         <attribute name="cookingInstructions" optional="YES" attributeType="String"/>
-        <attribute name="ingredientList" optional="YES" attributeType="Transformable" customClassName="[String]"/>
+        <attribute name="ingredientList" optional="YES" attributeType="Transformable" customClassName="[Ingredient]"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="prepTime" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="summaryDescription" optional="YES" attributeType="String"/>
@@ -20,7 +21,7 @@
     </entity>
     <elements>
         <element name="Category" positionX="48.9765625" positionY="178.8671875" width="128" height="73"/>
-        <element name="Ingredient" positionX="-190.4375" positionY="227.96875" width="128" height="73"/>
+        <element name="Ingredient" positionX="-190.4375" positionY="227.96875" width="128" height="88"/>
         <element name="Recipe" positionX="-72" positionY="216" width="128" height="163"/>
     </elements>
 </model>
