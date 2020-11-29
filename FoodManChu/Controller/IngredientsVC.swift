@@ -39,6 +39,8 @@ class IngredientsVC: UIViewController, NSFetchedResultsControllerDelegate {
 //        recipeDetailsVC?.recipeToEdit.ingredientList = ["salami"]
 //    }
     
+
+    
     func attemptIngredientFetch() {
         print("ingredient fetch!!")
         let fetchRequest: NSFetchRequest<Ingredient> = Ingredient.fetchRequest()

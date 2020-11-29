@@ -16,8 +16,7 @@ class IngredientCell: UITableViewCell {
         amountLabel.text = "1 cup"
         if let amount = ingredient.amount {
             amountLabel.text = amount
-        }
-        
+        }        
     }
     
 //    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

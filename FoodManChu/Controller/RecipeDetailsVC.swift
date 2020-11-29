@@ -10,6 +10,7 @@ import CoreData
 
 class RecipeDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UITableViewDataSource, UITableViewDelegate {
     
+    @IBOutlet weak var selectedIngredientLabel: UILabel!
     @IBOutlet weak var recipeImage: UIImageView!
     @IBOutlet weak var categoryTextField: UITextField!
     @IBOutlet weak var recipeNameTextField: UITextField!
@@ -21,7 +22,8 @@ class RecipeDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIT
     //@IBOutlet weak var categoryPicker: UIPickerView!
     
     //var controller: NSFetchedResultsController<Ingredient>!
-    var recipeToEdit: Recipe!
+    var recipeToEdit = Recipe()
+    var recipeIngredients = [Ingredient]()
     var categories = [Category]()
     var ingredients = [Ingredient]()
     var selectedIngredients = [Ingredient]()
@@ -41,18 +43,24 @@ class RecipeDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIT
         categoryPicker.dataSource = self
         ingredientPicker.delegate = self
         ingredientPicker.dataSource = self
-        // configureUI
-        recipeNameTextField.text = recipeToEdit.name
-        prepTimeTextField.text = String(recipeToEdit.prepTime)
-        categoryTextField.text = recipeToEdit.categoryType!
+        configureUI()
         // populate Recipe
         fetchCategories()
         // populateCategoryPicker()
         createTapGestureForCategoryPicker()
-        disableTextFields()
+        //disableTextFields()
         // get ingredients for Recipe:
         attemptIngredientFetch()
         populateIngredientPIcker()
+        enableTextFields()
+    }
+    
+    func configureUI() {
+        // configureUI
+        recipeNameTextField.text = recipeToEdit.name
+        prepTimeTextField.text = String(recipeToEdit.prepTime)
+        categoryTextField.text = recipeToEdit.categoryType!
+        recipeIngredients = recipeToEdit.ingredients?.allObjects as! [Ingredient]
     }
     
     @IBAction func addIngredientBtnPressed(_ sender: UIButton) {
@@ -62,7 +70,7 @@ class RecipeDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIT
             selectedPicker = "ingredient"
             //populateIngredientPIcker()
             self.isPickerVisible = true
-            disableTextFields()
+            //disableTextFields()
             ingredientPicker.isHidden = false
             ingredientPicker.backgroundColor = UIColor.white
             ingredientPicker.setValue(UIColor.black, forKey: "textColor")
@@ -107,7 +115,7 @@ class RecipeDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIT
     }
     
     @IBAction func editButtonTapped(_ sender: UIBarButtonItem) {
-        enableTextFields()
+        //enableTextFields()
     }
     
     func createTapGestureForCategoryPicker() {
@@ -150,6 +158,8 @@ class RecipeDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIT
         //ingredientPickerData.removeAll()
         //categoryPickerData.removeAll()
         enableTextFields()
+        configureUI()
+        tableView.reloadData()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -184,14 +194,14 @@ class RecipeDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UIT
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return recipeToEdit.ingredientList?.count ?? 0
+        return recipeIngredients.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "IngredientCell", for: indexPath) as? IngredientCell else {
             return UITableViewCell()
         }
-        let ingredient = ingredients[indexPath.row]
+        let ingredient = recipeIngredients[indexPath.row]
         //configureCell(cell, indexPath: indexPath)
         cell.configCell(ingredient)
         return cell
@@ -205,20 +215,15 @@ extension RecipeDetailsVC: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        print("pickerView \(pickerView)")
         if selectedPicker == "ingredient" {
-            print("ingredientPickerData.count is \(ingredientPickerData.count)")
             return ingredientPickerData.count
         } else {
-            print("categoryPicker")
-            print("categoryPickerData.count is \(categoryPickerData.count)")
             return categoryPickerData.count
         }
         
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        print("titleForRow")
         if selectedPicker == "ingredient" {
             return ingredientPickerData[row]
         } else {
@@ -226,15 +231,30 @@ extension RecipeDetailsVC: UIPickerViewDelegate, UIPickerViewDataSource {
         }
     }
     
+    func save() {
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+    }
+    
     // Capture the picker view selection
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if selectedPicker == "ingredient" {
-            let ingredient = Ingredient(context: Constants.context)
-            ingredient.name = ingredientPickerData[row]
-            selectedIngredients.append(ingredient)
-            // TODO: save ingredient to recipeToEdit in CoreData; tableView.reloadData()
+            for ingredient in self.ingredients {
+                if ingredient.name == ingredientPickerData[row] {
+                    selectedIngredientLabel.text = ingredient.name
+                    ingredient.amount = "4 cups"
+                    print("ingredient is now: \(ingredient)")
+                    recipeIngredients.append(ingredient)
+                    recipeToEdit.addToIngredients(ingredient)
+                }
+            }
         } else {
-            categoryTextField.text = categoryPickerData[row]
+            recipeToEdit.categoryType = categoryPickerData[row]
+        }
+        do {
+            try Constants.context.save()
+            tableView.reloadData()
+        } catch let err {
+            print(err)
         }
     }
     

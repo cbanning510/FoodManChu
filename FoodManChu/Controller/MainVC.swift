@@ -14,7 +14,7 @@ class MainVC: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     var controller: NSFetchedResultsController<Recipe>!
-    var recipes: [Recipe]?
+    var recipes = [Recipe]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,38 +22,79 @@ class MainVC: UIViewController {
         tableView.dataSource = self
         
         //generateDummyCategories()
-        //generateDummyRecipes()  // 1 - load Recipes into CoreData
-        //generateDummyIngredients() // 2 - load Ingredients into CoreData
-        attemptFetch() // 3 - populate recipes array with fetched Recipe data
-        print(recipes!)
+        //generateDummyRecipes()
+        //generateDummyIngredients()
+        attemptFetch()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        attemptFetch()
+    }
+    
+    func attemptFetch() {
+        let request = Recipe.fetchRequest() as NSFetchRequest<Recipe>
+        //let fetchRequest: NSFetchRequest<Recipe> = Recipe.fetchRequest()
+        
+        let nameSort = NSSortDescriptor(key: "name", ascending: true)
+        request.sortDescriptors = [nameSort]
+        //let priceSort = NSSortDescriptor(key: "price", ascending: true)
+        //let titleSort = NSSortDescriptor(key: "name", ascending: true)
+        
+//        switch segmentedControl.selectedSegmentIndex {
+//        case 0:
+//            print("1")
+//            fetchRequest.sortDescriptors = [dateSort]
+//        case 1:
+//            print("2")
+//            fetchRequest.sortDescriptors = [priceSort]
+//        case 2:
+//            print("3")
+//            fetchRequest.sortDescriptors = [titleSort]
+//        default:
+//            print("4")
+//            break
+//        }
+        
+        // create instance of results controller
+        //let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                    //managedObjectContext: Constants.context,
+                                                    //sectionNameKeyPath: nil,
+                                                    //cacheName: nil)
+        
+        // get access to properties and methods of controller:
+        //controller.delegate = self
+        // assign instance to variable:
+        //self.controller = controller
+        
+        do {
+            // perform actual core data fetch:
+            self.recipes = try Constants.context.fetch(request)
+            tableView.reloadData()
+        } catch let err {
+            print(err)
+        }
     }
 }
 
 extension MainVC: UITableViewDelegate, UITableViewDataSource {
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        // if let
-        // sections is a row of data:
-//        if let sections = controller.sections {
-//            return sections.count
-//        }
-        return 1 //recipes!.count
-    }
+//    func numberOfSections(in tableView: UITableView) -> Int {
+//        // if let
+//        // sections is a row of data:
+////        if let sections = controller.sections {
+////            return sections.count
+////        }
+//        return 1 //recipes!.count
+//    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        if let sections = controller.sections {
-//            let sectionInfo = sections[section]
-//            return sectionInfo.numberOfObjects
-//        }
-        return recipes!.count
+        return recipes.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellReuseId, for: indexPath) as? RecipeCell else {
             return UITableViewCell()
         }
-        let recipe = recipes![indexPath.row]
-        //configureCell(cell, indexPath: indexPath)
+        let recipe = recipes[indexPath.row]
         cell.configCell(recipe)
         return cell
     }
@@ -62,25 +103,15 @@ extension MainVC: UITableViewDelegate, UITableViewDataSource {
         return 150
     }
     
-    //func configureCell(_ cell: RecipeCell, indexPath: IndexPath) {
-        //let recipe = recipes![indexPath.row]
-        //let recipe = controller.object(at: indexPath)
-        //cell.configCell(recipe)
-    //}
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // if let objs = controller.fetchedObjects, objs.count > 0 {
-            //let recipe = objs[indexPath.row]
-        let recipe = recipes![indexPath.row]
+        let recipe = recipes[indexPath.row]
             performSegue(withIdentifier: "DetailSegue", sender: recipe)
-        //}
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "DetailSegue" {
             if let destination = segue.destination as? RecipeDetailsVC {
                 if let recipe = sender as? Recipe {
-                    print("recipe being sent is: \(recipe)")
                     destination.recipeToEdit = recipe
                 }
             }
@@ -107,31 +138,38 @@ extension MainVC: NSFetchedResultsControllerDelegate {
     
     func generateDummyRecipes() {
         let recipe1 = Recipe(context: Constants.context)
+        recipe1.id = 0
         recipe1.categoryType = "Vegetarian"
         recipe1.name = "Chicken Parmesan"
         recipe1.prepTime = 60
         recipe1.summaryDescription = "My favorite Italian entree"
-//        recipe1.ingredientList = [
-//            Ingredient(context: Constants.context)
-//        ]
         
         let recipe2 = Recipe(context: Constants.context)
+        recipe2.id = 1
         recipe2.categoryType = "Vegan"
         recipe2.name = "Vegan Alfredo"
         recipe2.prepTime = 45
         recipe2.summaryDescription = "Tossed in a delicious cashew hemp wtf cream"
         
         let recipe3 = Recipe(context: Constants.context)
+        recipe3.id = 2
         recipe3.categoryType = "Paleo"
         recipe3.name = "Mixed Nuts"
         recipe3.prepTime = 2
         recipe3.summaryDescription = "A bowl of mixed nuts straight from the can"
         
         let recipe4 = Recipe(context: Constants.context)
+        recipe4.id = 3
         recipe4.categoryType = "Ke to"
         recipe4.name = "Blueberry Muffins"
         recipe4.prepTime = 44
         recipe4.summaryDescription = "Superb decadence that only a crate of blueberries could provide"
+        let ingredient1 = Ingredient(context: Constants.context)
+        ingredient1.name = "milk"
+        let ingredient2 = Ingredient(context: Constants.context)
+        ingredient2.name = "cream"
+        recipe4.addToIngredients(ingredient1)
+        recipe4.addToIngredients(ingredient2)
         
         Constants.ad.saveContext()
     }
@@ -240,48 +278,6 @@ extension MainVC: NSFetchedResultsControllerDelegate {
         
         Constants.ad.saveContext()
     }
-    // fetch Core Data:
-    func attemptFetch() {
-        let request = Recipe.fetchRequest() as NSFetchRequest<Recipe>
-        //let fetchRequest: NSFetchRequest<Recipe> = Recipe.fetchRequest()
-        
-        let nameSort = NSSortDescriptor(key: "name", ascending: true)
-        request.sortDescriptors = [nameSort]
-        //let priceSort = NSSortDescriptor(key: "price", ascending: true)
-        //let titleSort = NSSortDescriptor(key: "name", ascending: true)
-        
-//        switch segmentedControl.selectedSegmentIndex {
-//        case 0:
-//            print("1")
-//            fetchRequest.sortDescriptors = [dateSort]
-//        case 1:
-//            print("2")
-//            fetchRequest.sortDescriptors = [priceSort]
-//        case 2:
-//            print("3")
-//            fetchRequest.sortDescriptors = [titleSort]
-//        default:
-//            print("4")
-//            break
-//        }
-        
-        // create instance of results controller
-        //let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                    //managedObjectContext: Constants.context,
-                                                    //sectionNameKeyPath: nil,
-                                                    //cacheName: nil)
-        
-        // get access to properties and methods of controller:
-        //controller.delegate = self
-        // assign instance to variable:
-        //self.controller = controller
-        
-        do {
-            // perform actual core data fetch:
-            self.recipes = try Constants.context.fetch(request)
-        } catch let err {
-            print(err)
-        }
-    }
+    
 }
 
