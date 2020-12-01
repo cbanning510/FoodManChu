@@ -2,7 +2,7 @@
 //  Recipe+CoreDataProperties.swift
 //  FoodManChu
 //
-//  Created by chris on 11/29/20.
+//  Created by chris on 12/1/20.
 //
 //
 
@@ -25,6 +25,7 @@ extension Recipe {
     @NSManaged public var summaryDescription: String?
     @NSManaged public var category: Category?
     @NSManaged public var ingredients: NSSet?
+    @NSManaged public var instructions: NSSet?
 
 }
 
@@ -42,6 +43,23 @@ extension Recipe {
 
     @objc(removeIngredients:)
     @NSManaged public func removeFromIngredients(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for instructions
+extension Recipe {
+
+    @objc(addInstructionsObject:)
+    @NSManaged public func addToInstructions(_ value: Instruction)
+
+    @objc(removeInstructionsObject:)
+    @NSManaged public func removeFromInstructions(_ value: Instruction)
+
+    @objc(addInstructions:)
+    @NSManaged public func addToInstructions(_ values: NSSet)
+
+    @objc(removeInstructions:)
+    @NSManaged public func removeFromInstructions(_ values: NSSet)
 
 }
 

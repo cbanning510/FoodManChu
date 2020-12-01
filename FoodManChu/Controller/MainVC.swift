@@ -110,7 +110,7 @@ extension MainVC: UITableViewDelegate, UITableViewDataSource {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "DetailSegue" {
-            if let destination = segue.destination as? RecipeDetailsVC {
+            if let destination = segue.destination as? NewRecipeDetails {
                 if let recipe = sender as? Recipe {
                     destination.recipeToEdit = recipe
                 }
@@ -170,6 +170,12 @@ extension MainVC: NSFetchedResultsControllerDelegate {
         ingredient2.name = "cream"
         recipe4.addToIngredients(ingredient1)
         recipe4.addToIngredients(ingredient2)
+        let instruction1 = Instruction(context: Constants.context)
+        instruction1.summary = "Preheat oven to 350"
+        let instruction2 = Instruction(context: Constants.context)
+        instruction2.summary = "Wash and dry blueberries"
+        recipe4.addToInstructions(instruction1)
+        recipe4.addToInstructions(instruction2)
         
         Constants.ad.saveContext()
     }

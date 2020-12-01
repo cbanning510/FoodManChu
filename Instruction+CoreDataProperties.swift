@@ -1,5 +1,5 @@
 //
-//  Ingredient+CoreDataProperties.swift
+//  Instruction+CoreDataProperties.swift
 //  FoodManChu
 //
 //  Created by chris on 12/1/20.
@@ -10,20 +10,19 @@ import Foundation
 import CoreData
 
 
-extension Ingredient {
+extension Instruction {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Ingredient> {
-        return NSFetchRequest<Ingredient>(entityName: "Ingredient")
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<Instruction> {
+        return NSFetchRequest<Instruction>(entityName: "Instruction")
     }
 
-    @NSManaged public var amount: String?
-    @NSManaged public var name: String?
+    @NSManaged public var summary: String?
     @NSManaged public var recipe: NSSet?
 
 }
 
 // MARK: Generated accessors for recipe
-extension Ingredient {
+extension Instruction {
 
     @objc(addRecipeObject:)
     @NSManaged public func addToRecipe(_ value: Recipe)
@@ -39,6 +38,6 @@ extension Ingredient {
 
 }
 
-extension Ingredient : Identifiable {
+extension Instruction : Identifiable {
 
 }

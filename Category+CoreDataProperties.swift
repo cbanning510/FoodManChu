@@ -2,7 +2,7 @@
 //  Category+CoreDataProperties.swift
 //  FoodManChu
 //
-//  Created by chris on 11/29/20.
+//  Created by chris on 12/1/20.
 //
 //
 

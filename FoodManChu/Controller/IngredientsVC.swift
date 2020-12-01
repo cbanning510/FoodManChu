@@ -16,7 +16,7 @@ class IngredientsVC: UIViewController, NSFetchedResultsControllerDelegate {
     var ingredients: [Ingredient]?
     var recipeToEdit: Recipe?
     // recipeDetailsVC.recipeToEdit.ingredientList is list of ingredients
-    weak var recipeDetailsVC: RecipeDetailsVC?
+    weak var recipeDetailsVC: NewRecipeDetails?
 
     override func viewDidLoad() {
         super.viewDidLoad()
