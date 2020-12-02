@@ -78,6 +78,15 @@ class NewRecipeDetails: UIViewController {
         instructionsUnderlineView.isHidden = false
         displayInstructionList()
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "AddEditTableSegue" {
+            if let destVC = segue.destination as? UINavigationController,
+                let targetController = destVC.topViewController as? AddEditTableVC {
+                targetController.recipeToEdit = recipeToEdit
+            }
+        }
+    }
  
 }
 
