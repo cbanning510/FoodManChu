@@ -22,8 +22,9 @@ class MainVC: UIViewController {
         tableView.dataSource = self
         
         //generateDummyCategories()
-        //generateDummyRecipes()
         //generateDummyIngredients()
+        //generateDummyRecipes()
+        
         attemptFetch()
     }
     
@@ -33,41 +34,9 @@ class MainVC: UIViewController {
     
     func attemptFetch() {
         let request = Recipe.fetchRequest() as NSFetchRequest<Recipe>
-        //let fetchRequest: NSFetchRequest<Recipe> = Recipe.fetchRequest()
-        
         let nameSort = NSSortDescriptor(key: "name", ascending: true)
         request.sortDescriptors = [nameSort]
-        //let priceSort = NSSortDescriptor(key: "price", ascending: true)
-        //let titleSort = NSSortDescriptor(key: "name", ascending: true)
-        
-//        switch segmentedControl.selectedSegmentIndex {
-//        case 0:
-//            print("1")
-//            fetchRequest.sortDescriptors = [dateSort]
-//        case 1:
-//            print("2")
-//            fetchRequest.sortDescriptors = [priceSort]
-//        case 2:
-//            print("3")
-//            fetchRequest.sortDescriptors = [titleSort]
-//        default:
-//            print("4")
-//            break
-//        }
-        
-        // create instance of results controller
-        //let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                    //managedObjectContext: Constants.context,
-                                                    //sectionNameKeyPath: nil,
-                                                    //cacheName: nil)
-        
-        // get access to properties and methods of controller:
-        //controller.delegate = self
-        // assign instance to variable:
-        //self.controller = controller
-        
         do {
-            // perform actual core data fetch:
             self.recipes = try Constants.context.fetch(request)
             tableView.reloadData()
         } catch let err {
@@ -77,14 +46,6 @@ class MainVC: UIViewController {
 }
 
 extension MainVC: UITableViewDelegate, UITableViewDataSource {
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        // if let
-//        // sections is a row of data:
-////        if let sections = controller.sections {
-////            return sections.count
-////        }
-//        return 1 //recipes!.count
-//    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return recipes.count
@@ -99,18 +60,18 @@ extension MainVC: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 150
-    }
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let recipe = recipes[indexPath.row]
             performSegue(withIdentifier: "DetailSegue", sender: recipe)
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 150
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "DetailSegue" {
-            if let destination = segue.destination as? NewRecipeDetails {
+            if let destination = segue.destination as? RecipeDetailsVC {
                 if let recipe = sender as? Recipe {
                     destination.recipeToEdit = recipe
                 }
@@ -164,16 +125,20 @@ extension MainVC: NSFetchedResultsControllerDelegate {
         recipe4.name = "Blueberry Muffins"
         recipe4.prepTime = 44
         recipe4.summaryDescription = "Superb decadence that only a crate of blueberries could provide"
+        
         let ingredient1 = Ingredient(context: Constants.context)
         ingredient1.name = "milk"
         let ingredient2 = Ingredient(context: Constants.context)
         ingredient2.name = "cream"
+        
         recipe4.addToIngredients(ingredient1)
         recipe4.addToIngredients(ingredient2)
+        
         let instruction1 = Instruction(context: Constants.context)
         instruction1.summary = "Preheat oven to 350"
         let instruction2 = Instruction(context: Constants.context)
         instruction2.summary = "Wash and dry blueberries"
+        
         recipe4.addToInstructions(instruction1)
         recipe4.addToInstructions(instruction2)
         
@@ -181,10 +146,6 @@ extension MainVC: NSFetchedResultsControllerDelegate {
     }
     
     func generateDummyIngredients() {
-        let ingredient1 = Ingredient(context: Constants.context)
-        ingredient1.name = "milk"
-        let ingredient2 = Ingredient(context: Constants.context)
-        ingredient2.name = "cream"
         let ingredient3 = Ingredient(context: Constants.context)
         ingredient3.name = "unsalted butter"
         let ingredient4 = Ingredient(context: Constants.context)
@@ -244,7 +205,7 @@ extension MainVC: NSFetchedResultsControllerDelegate {
         let ingredient31 = Ingredient(context: Constants.context)
         ingredient31.name = "carrot"
         let ingredient32 = Ingredient(context: Constants.context)
-        ingredient32.name = "milk"
+        ingredient32.name = "paprika"
         let ingredient33 = Ingredient(context: Constants.context)
         ingredient33.name = "lettuce"
         let ingredient34 = Ingredient(context: Constants.context)

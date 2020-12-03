@@ -1,298 +1,125 @@
-////
-////  RecipeDetailsVC.swift
-////  FoodManChu
-////
-////  Created by chris on 11/24/20.
-////
 //
-//import UIKit
-//import CoreData
+//  RecipeDetails2VC.swift
+//  FoodManChu
 //
-//class RecipeDetailsVC: UIViewController, NSFetchedResultsControllerDelegate, UITableViewDataSource, UITableViewDelegate {
-//    
-//    //@IBOutlet weak var selectedIngredientLabel: UILabel!
-//    @IBOutlet weak var recipeImage: UIImageView!
-//    //@IBOutlet weak var categoryTextField: UITextField!
-//   // @IBOutlet weak var recipeNameTextField: UITextField!
-//   // @IBOutlet weak var prepTimeTextField: UITextField!
-//   // @IBOutlet weak var categoryTypeLabel: UILabel!
-//   // @IBOutlet weak var summaryTextField: UITextField!
-//   // @IBOutlet weak var ingredientsTableView: UITableView!
-//    
-//    //@IBOutlet weak var categoryPicker: UIPickerView!
-//    
-//    //var controller: NSFetchedResultsController<Ingredient>!
-//    var recipeToEdit: Recipe?
-//    var recipeIngredients: [Ingredient]?
-//    var categories: [Category]?
-//    var ingredients: [Ingredient]?
-//    var selectedIngredients: [Ingredient]?
-//    var categoryPickerData: [String] = [String]()
-//    var ingredientPickerData: [String] = [String]()
-//    var toolBar = UIToolbar()
-//    var categoryPicker  = UIPickerView()
-//    var ingredientPicker = UIPickerView()
-//    var isPickerVisible = false
-//    var selectedPicker = ""
-//    
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        ingredientsTableView.delegate = self
-//        ingredientsTableView.dataSource = self
-//        categoryPicker.delegate = self
-//        categoryPicker.dataSource = self
-//        ingredientPicker.delegate = self
-//        ingredientPicker.dataSource = self
-//        configureUI()
-//        // populate Recipe
-//        fetchCategories()
-//        // populateCategoryPicker()
-//        createTapGestureForCategoryPicker()
-//        //disableTextFields()
-//        // get ingredients for Recipe:
-//        attemptIngredientFetch()
-//        populateIngredientPIcker()
-//        enableTextFields()
+//  Created by chris on 12/1/20.
+//
 
-//
-//    }
-//    
-//    func configureUI() {
-//        // configureUI
-//        //recipeNameTextField.text = recipeToEdit!.name
-//        prepTimeTextField.text = String(recipeToEdit!.prepTime)
-//        categoryTextField.text = recipeToEdit?.categoryType!
-//        recipeIngredients = recipeToEdit!.ingredients?.allObjects as? [Ingredient]
-//        ingredientsTableView.layer.borderColor = UIColor.gray.cgColor
-//        ingredientsTableView.layer.borderWidth = 3.0
-//    }
-//    
-//    @IBAction func addIngredientBtnPressed(_ sender: UIButton) {
-//        // configure picker for ingredient list
-//        if !self.isPickerVisible {
-//            selectedPicker = "ingredient"
-//            //populateIngredientPIcker()
-//            self.isPickerVisible = true
-//            //disableTextFields()
-//            ingredientPicker.isHidden = false
-//            ingredientPicker.backgroundColor = UIColor.white
-//            ingredientPicker.setValue(UIColor.black, forKey: "textColor")
-//            ingredientPicker.autoresizingMask = .flexibleWidth
-//            ingredientPicker.contentMode = .center
-//            ingredientPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 300)
-//            view.addSubview(ingredientPicker)
-//                    
-//            toolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 50))
-//            toolBar.barStyle = .default
-//            toolBar.isTranslucent = true
-//            toolBar.sizeToFit()
-//            toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(onDoneButtonTapped))]
-//            view.addSubview(toolBar)
-//        }
-//    }
-//    
-//    func attemptIngredientFetch() {
-//        let request = Ingredient.fetchRequest() as NSFetchRequest<Ingredient>
-//        let nameSort = NSSortDescriptor(key: "name", ascending: true)
-//        request.sortDescriptors = [nameSort]
-//        
-//        do {
-//            self.ingredients = try Constants.context.fetch(request)
-//        } catch let err {
-//            print(err)
-//        }
-//    }
-//    
-//    func enableTextFields() {
-//        categoryTextField.isUserInteractionEnabled = true
-//        //recipeNameTextField.isUserInteractionEnabled = true
-//        prepTimeTextField.isUserInteractionEnabled = true
-//        summaryTextField.isUserInteractionEnabled = true
-//    }
-//    func disableTextFields() {
-//        categoryTextField.isUserInteractionEnabled = false
-//        //recipeNameTextField.isUserInteractionEnabled = false
-//        prepTimeTextField.isUserInteractionEnabled = false
-//        summaryTextField.isUserInteractionEnabled = false
-//    }
-//    
-//    @IBAction func editButtonTapped(_ sender: UIBarButtonItem) {
-//        //enableTextFields()
-//    }
-//    
-//    func createTapGestureForCategoryPicker() {
-//        let tap = UITapGestureRecognizer(target: self, action: #selector(tap(gestureReconizer:)))
-//        categoryTextField.addGestureRecognizer(tap)
-//        categoryTextField.isUserInteractionEnabled = false
-//    }
-//    
-//    
-//    
-//    @objc func tap(gestureReconizer: UITapGestureRecognizer) {
-//        if !self.isPickerVisible {
-//            populateCategoryPicker()
-//            selectedPicker = "categories"
-//            self.isPickerVisible = true
-//            disableTextFields()
-//            categoryPicker.isHidden = false
-//            categoryPicker.backgroundColor = UIColor.white
-//            categoryPicker.setValue(UIColor.black, forKey: "textColor")
-//            categoryPicker.autoresizingMask = .flexibleWidth
-//            categoryPicker.contentMode = .center
-//            categoryPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 300)
-//            view.addSubview(categoryPicker)
-//                    
-//            toolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 50))
-//            toolBar.barStyle = .default
-//            toolBar.isTranslucent = true
-//            toolBar.sizeToFit()
-//            toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(onDoneButtonTapped))]
-//            view.addSubview(toolBar)
-//        }
-//    }
-//    
-//    @objc func onDoneButtonTapped() {
-//        toolBar.removeFromSuperview()
-//        categoryPicker.removeFromSuperview()
-//        ingredientPicker.removeFromSuperview()
-//        isPickerVisible = false
-//        selectedPicker = ""
-//        //ingredientPickerData.removeAll()
-//        //categoryPickerData.removeAll()
-//        enableTextFields()
-//        configureUI()
-//        ingredientsTableView.reloadData()
-//    }
-//    
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == "IngredientsSegue" {
-//            if let destination = segue.destination as? IngredientsVC {
-//                destination.recipeToEdit = recipeToEdit
-//            }
-//        }
-//    }
-//    
-//    func fetchCategories() {
-//        let request = Category.fetchRequest() as NSFetchRequest<Category>
-//        do {
-//            self.categories = try Constants.context.fetch(request)
-//        } catch let err {
-//            print(err)
-//        }
-//    }
-//    
-//    func populateIngredientPIcker() {
-//        for ingredient in ingredients! {
-//            ingredientPickerData.append(ingredient.name!)
-//        }
-//    }
-//    
-//    func populateCategoryPicker() {
-//        for category in categories! {
-//            categoryPickerData.append(category.name!)
-//        }
-//    }
-//    
-//    
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return recipeIngredients!.count
-//    }
-//    
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        guard let cell = tableView.dequeueReusableCell(withIdentifier: "IngredientCell", for: indexPath) as? IngredientCell else {
-//            return UITableViewCell()
-//        }
-//        let ingredient = recipeIngredients![indexPath.row]
-//        //configureCell(cell, indexPath: indexPath)
-//        cell.configCell(ingredient)
-//        return cell
-//    }
-//}
-//
-//extension RecipeDetailsVC: UIPickerViewDelegate, UIPickerViewDataSource {
-//    
-//    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-//        return 1
-//    }
-//    
-//    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-//        if selectedPicker == "ingredient" {
-//            return ingredientPickerData.count
-//        } else {
-//            return categoryPickerData.count
-//        }
-//        
-//    }
-//    
-//    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-//        if selectedPicker == "ingredient" {
-//            return ingredientPickerData[row]
-//        } else {
-//            return categoryPickerData[row]
-//        }
-//    }
-//    
-//    func save() {
-//        (UIApplication.shared.delegate as! AppDelegate).saveContext()
-//    }
-//    
-//    // Capture the picker view selection
-//    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-//        if selectedPicker == "ingredient" {
-//            for ingredient in self.ingredients! {
-//                if ingredient.name == ingredientPickerData[row] {
-//                    
-//                    ingredient.amount = "4 cups"
-//                   
-//                    recipeIngredients!.append(ingredient)
-//                    recipeToEdit!.addToIngredients(ingredient)
-//                }
-//            }
-//        } else {
-//            recipeToEdit!.categoryType = categoryPickerData[row]
-//        }
-//        do {
-//            try Constants.context.save()
-//            ingredientsTableView.reloadData()
-//        } catch let err {
-//            print(err)
-//        }
-//    }
-//    
-//}
-//
-//extension UITextField{
-//    
-//    @IBInspectable var doneAccessory: Bool{
-//        get{
-//            return self.doneAccessory
-//        }
-//        set (hasDone) {
-//            if hasDone{
-//                addDoneButtonOnKeyboard()
-//            }
-//        }
-//    }
-//    
-//    func addDoneButtonOnKeyboard()
-//    {
-//        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
-//        doneToolbar.barStyle = .default
-//        
-//        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-//        let done: UIBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(self.doneButtonAction))
-//        
-//        let items = [flexSpace, done]
-//        doneToolbar.items = items
-//        doneToolbar.sizeToFit()
-//        
-//        self.inputAccessoryView = doneToolbar
-//    }
-//    
-//    @objc func doneButtonAction()
-//    {
-//        self.resignFirstResponder()
-//    }
-//}
-//
+import UIKit
+
+class RecipeDetailsVC: UIViewController {
+    
+    @IBOutlet weak var recipeTitleLabel: UILabel!
+    @IBOutlet weak var recipeImage: UIImageView!
+    
+    @IBOutlet weak var listLabel: UILabel!
+    
+    @IBOutlet weak var instructionsUnderlineView: UIView!
+    @IBOutlet weak var ingredientsUnderlineView: UIView!
+    
+    var recipeToEdit: Recipe?
+    var isIngredientsSelected = true
+    var recipeIngredients = [Ingredient]()
+    var recipeInstructions = [Instruction]()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureUI()
+        recipeIngredients = (recipeToEdit!.ingredients?.allObjects as? [Ingredient])!
+        recipeInstructions = (recipeToEdit!.instructions?.allObjects as? [Instruction])!
+        instructionsUnderlineView.isHidden = true
+        displayIngredientList()
+    }
+    
+    func configureUI() {
+        recipeImage.addBlackGradientLayerInBackground(frame: recipeImage.bounds, colors:[.clear, #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.747270976)])
+        ingredientsUnderlineView.addBorder(toSide: .Bottom, withColor: UIColor.red.cgColor, andThickness: 44.0)
+        addBorder(view: ingredientsUnderlineView)
+        addBorder(view: instructionsUnderlineView)
+    }
+    
+    func displayIngredientList() {
+        var ingredientList = String()
+        for ingredient in recipeIngredients {
+            ingredientList += ingredient.name! + "\n"
+        }
+        listLabel.text = ingredientList
+    }
+    
+    func displayInstructionList() {
+        var instructionList = String()
+        for instruction in recipeInstructions {
+            instructionList += instruction.summary! + "\n"
+        }
+        listLabel.text = instructionList
+    }
+    
+    func addBorder(view: UIView) {
+        view.layer.borderWidth = 1
+        view.layer.borderColor = #colorLiteral(red: 0.9411764741, green: 0.4980392158, blue: 0.3529411852, alpha: 1)
+    }
+    
+    @IBAction func editButtonPressed(_ sender: UIBarButtonItem) {
+        print("edit")
+    }
+    
+    @IBAction func ingredientsButtonPressed(_ sender: UIButton) {
+        isIngredientsSelected = true
+        ingredientsUnderlineView.isHidden = false
+        instructionsUnderlineView.isHidden = true
+        displayIngredientList()
+    }
+    
+    @IBAction func instructionsButtonPressed(_ sender: UIButton) {
+        isIngredientsSelected = false
+        ingredientsUnderlineView.isHidden = true
+        instructionsUnderlineView.isHidden = false
+        displayInstructionList()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "AddEditTableSegue" {
+            if let destVC = segue.destination as? UINavigationController,
+                let targetController = destVC.topViewController as? AddEditTableVC {
+                targetController.recipeToEdit = recipeToEdit
+            }
+        }
+    }
+ 
+}
+
+extension UIView{
+    // For insert layer in background
+    func addBlackGradientLayerInBackground(frame: CGRect, colors:[UIColor]){
+        let gradient = CAGradientLayer()
+        gradient.frame = frame
+        gradient.colors = colors.map{$0.cgColor}
+        gradient.startPoint = CGPoint(x: 0, y: 0.7)
+        gradient.endPoint = CGPoint(x: 0, y: 1.0)
+        self.layer.insertSublayer(gradient, at: 0)
+    }
+}
+
+extension UIView {
+
+    enum ViewSide {
+           case Left, Right, Top, Bottom
+       }
+
+       func addBorder(toSide side: ViewSide, withColor color: CGColor, andThickness thickness: CGFloat) {
+
+           let border = CALayer()
+           border.backgroundColor = color
+
+           switch side {
+           case .Left: border.frame = CGRect(x: frame.minX, y: frame.minY, width: thickness, height: frame.height); break
+           case .Right: border.frame = CGRect(x: frame.maxX, y: frame.minY, width: thickness, height: frame.height); break
+           case .Top: border.frame = CGRect(x: frame.minX, y: frame.minY, width: frame.width, height: thickness); break
+           case .Bottom: border.frame = CGRect(x: frame.minX, y: frame.maxY, width: frame.width, height: thickness); break
+           }
+
+           layer.addSublayer(border)
+       }
+}
+
 

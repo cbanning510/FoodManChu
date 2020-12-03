@@ -158,10 +158,10 @@
             </objects>
             <point key="canvasLocation" x="3904.347826086957" y="-62.276785714285708"/>
         </scene>
-        <!--New Recipe Details-->
+        <!--Recipe DetailsVC-->
         <scene sceneID="S7K-UK-7ux">
             <objects>
-                <viewController id="Nxy-WU-gIT" customClass="NewRecipeDetails" customModule="FoodManChu" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Nxy-WU-gIT" customClass="RecipeDetailsVC" customModule="FoodManChu" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="UaI-b8-tNL">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="1200"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -577,20 +577,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Qla-QL-T2T">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelectionDuringEditing="YES" allowsMultipleSelection="YES" allowsMultipleSelectionDuringEditing="YES" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Qla-QL-T2T">
                                 <rect key="frame" x="0.0" y="44" width="375" height="623"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="IngredientCell" id="Psf-s2-ABy" userLabel="IngredientCell" customClass="IngredientCell" customModule="FoodManChu" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="21"/>
+                                        <rect key="frame" x="0.0" y="28" width="375" height="20"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Psf-s2-ABy" id="WH4-K5-P7k">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="21"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="20"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kmM-cb-Tn2">
-                                                    <rect key="frame" x="16" y="0.0" width="359" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <rect key="frame" x="16" y="0.0" width="359" height="20"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -624,7 +624,7 @@
                     <navigationItem key="navigationItem" title="Ingredients" id="J2g-tG-HaV">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="BHp-q1-kRE">
                             <connections>
-                                <action selector="showrecipeToEditIngredientList:" destination="WuA-t1-JVh" id="J4u-vh-F1K"/>
+                                <action selector="addButtonPressed:" destination="WuA-t1-JVh" id="y89-VC-qEW"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

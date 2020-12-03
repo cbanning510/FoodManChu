@@ -11,35 +11,34 @@ import CoreData
 class IngredientsVC: UIViewController, NSFetchedResultsControllerDelegate {
     
     @IBOutlet weak var tableView: UITableView!
-    
-    var controller: NSFetchedResultsController<Ingredient>!
-    var ingredients: [Ingredient]?
-    var recipeToEdit: Recipe?
-    weak var recipeDetailsVC: NewRecipeDetails?
+    var AddEditVC: AddEditTableVC?
 
+    var ingredients: [Ingredient]?
+    var selectedIngredients = [Ingredient]()
+    var recipeToEdit: Recipe?
+    weak var recipeDetailsVC: RecipeDetailsVC?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
         attemptIngredientFetch()
-        
+        selectedIngredients = recipeToEdit?.ingredients?.allObjects as! [Ingredient]
         self.tableView.allowsMultipleSelection = true
         self.tableView.allowsMultipleSelectionDuringEditing = true
+    }
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        //print("selectedIngredients: \(selectedIngredients)")
     }
     
     func attemptIngredientFetch() {
         let fetchRequest: NSFetchRequest<Ingredient> = Ingredient.fetchRequest()
         let nameSort = NSSortDescriptor(key: "name", ascending: true)
         fetchRequest.sortDescriptors = [nameSort]
-        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
-                                                    managedObjectContext: Constants.context,
-                                                    sectionNameKeyPath: nil,
-                                                    cacheName: nil)
-        controller.delegate = self
-        self.controller = controller
+        
         do {
-            try controller.performFetch()
-            ingredients = controller.sections![0].objects as? [Ingredient]
+            self.ingredients = try Constants.context.fetch(fetchRequest)
+            tableView.reloadData()
         } catch let err {
             print(err)
         }
@@ -47,55 +46,50 @@ class IngredientsVC: UIViewController, NSFetchedResultsControllerDelegate {
 }
 
 extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        if let sections = controller.sections {
-            return sections.count
-        }
-        return 0
-    }    
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let sections = controller.sections {
-            let sectionInfo = sections[section]
-            return sectionInfo.numberOfObjects
-        }
-        return 0
+        return ingredients!.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "IngredientCell", for: indexPath) as? IngredientCell else {
             return UITableViewCell()
         }
-        configureCell(cell, indexPath: indexPath)
+        let ingredient = ingredients![indexPath.row]
+        cell.configCell(ingredient)
+        cell.accessoryType = ingredients![indexPath.row].isCellSelected ? .checkmark : .none
         return cell
-    }    
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let ingredient = ingredients![indexPath.row]
+        selectedIngredients.append(ingredient)
+        ingredient.isCellSelected.toggle()
+        tableView.reloadRows(at:[indexPath],with:.none)
+    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44
+        return 40
     }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .delete
     }
-    // replace with trailingswipeAction etc.
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            tableView.beginUpdates()
-            if let sections = controller.sections {
-                self.tableView.deleteRows(at: [indexPath], with: .fade)
-                ingredients?.remove(at: indexPath.row)
-                Constants.context.delete(sections[0].objects![indexPath.row] as! Ingredient)
-                Constants.ad.saveContext()
-            }
-            attemptIngredientFetch()
-            tableView.endUpdates()
-            tableView.reloadData()            
-        }
-    }
     
-    func configureCell(_ cell: IngredientCell, indexPath: IndexPath) {
-        let ingredient = controller.object(at: indexPath)
-        cell.configCell(ingredient)
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completionHandler) in
+            let ingredientToRemove = self.ingredients![indexPath.row]
+            Constants.context.delete(ingredientToRemove)
+            
+            do {
+                try Constants.context.save()
+            }
+            catch {
+                
+            }
+            self.attemptIngredientFetch()
+        }
+        return UISwipeActionsConfiguration(actions: [action])
     }
 }
+    
+
