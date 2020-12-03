@@ -28,7 +28,24 @@ class IngredientsVC: UIViewController, NSFetchedResultsControllerDelegate {
         self.tableView.allowsMultipleSelectionDuringEditing = true
     }
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
-        //print("selectedIngredients: \(selectedIngredients)")
+        let alert = UIAlertController(title: "Add Ingredient", message: "Ingredient name?", preferredStyle: .alert)
+        alert.addTextField()
+        
+        let submitButton = UIAlertAction(title: "Add", style: .default) { (action) in
+            let textField = alert.textFields![0]
+            let newIngredient = Ingredient(context: Constants.context)
+            newIngredient.name = textField.text
+            
+            do {
+                try Constants.context.save()
+            }
+            catch {
+                print(error)
+            }
+            self.attemptIngredientFetch()
+        }
+        alert.addAction(submitButton)
+        self.present(alert, animated: true, completion: nil)
     }
     
     func attemptIngredientFetch() {
@@ -75,20 +92,48 @@ extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
         return .delete
     }
     
+
+    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let action = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completionHandler) in
+        
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completionHandler) in
             let ingredientToRemove = self.ingredients![indexPath.row]
             Constants.context.delete(ingredientToRemove)
-            
+
             do {
                 try Constants.context.save()
             }
             catch {
-                
+                print(error)
             }
             self.attemptIngredientFetch()
         }
-        return UISwipeActionsConfiguration(actions: [action])
+        
+        let editAction = UIContextualAction(style: .normal, title: "Edit") { (action, view, completionHandler) in
+            let ingredientToEdit = self.ingredients![indexPath.row]
+            
+            let alert = UIAlertController(title: "Edit Ingredient", message: "Edit Ingredient:", preferredStyle: .alert)
+            alert.addTextField()
+            let textField = alert.textFields![0]
+            textField.text = ingredientToEdit.name
+            let saveButton = UIAlertAction(title: "Save", style: .default) { (action) in
+                let textfield = alert.textFields![0]
+                ingredientToEdit.name = textfield.text
+              
+                do {
+                    try Constants.context.save()
+                }
+                catch {
+                    print(error)
+                }
+                self.attemptIngredientFetch()
+            }
+            alert.addAction(saveButton)
+            self.present(alert, animated: true, completion: nil)
+        }
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction, editAction])
+        configuration.performsFirstActionWithFullSwipe = false
+        return configuration
     }
 }
     

@@ -29,6 +29,7 @@
 		8348538B256CBEDF004D19F2 /* MaterialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8348538A256CBEDF004D19F2 /* MaterialView.swift */; };
 		8348538E256CC141004D19F2 /* RecipeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8348538D256CC141004D19F2 /* RecipeCell.swift */; };
 		83604708256CCE4B000B771F /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83604707256CCE4B000B771F /* Constants.swift */; };
+		83EE1ADE2578D9700013E87E /* testTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83EE1ADD2578D9700013E87E /* testTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		8348538A256CBEDF004D19F2 /* MaterialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialView.swift; sourceTree = "<group>"; };
 		8348538D256CC141004D19F2 /* RecipeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeCell.swift; sourceTree = "<group>"; };
 		83604707256CCE4B000B771F /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		83EE1ADD2578D9700013E87E /* testTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +137,7 @@
 				83081B4725761A1200DA2392 /* RecipeDetailsVC.swift */,
 				8335AD062577542C0091B6D0 /* AddEditTableVC.swift */,
 				83366F3C256D77230052EA47 /* IngredientsVC.swift */,
+				83EE1ADD2578D9700013E87E /* testTableViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -220,6 +223,7 @@
 				832BFA70257881DA008F9F06 /* Instruction+CoreDataClass.swift in Sources */,
 				832BFA6F257881DA008F9F06 /* Recipe+CoreDataProperties.swift in Sources */,
 				83485358256C3349004D19F2 /* MainVC.swift in Sources */,
+				83EE1ADE2578D9700013E87E /* testTableViewController.swift in Sources */,
 				8348538E256CC141004D19F2 /* RecipeCell.swift in Sources */,
 				83366F3D256D77230052EA47 /* IngredientsVC.swift in Sources */,
 				832BFA71257881DA008F9F06 /* Instruction+CoreDataProperties.swift in Sources */,
