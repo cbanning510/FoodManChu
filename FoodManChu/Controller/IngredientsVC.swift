@@ -79,14 +79,21 @@ extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "IngredientCell", for: indexPath) as? IngredientCell else {
-            return UITableViewCell()
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "IngredientCell", for: indexPath) as? IngredientCell else {
+                return UITableViewCell()
+            }
+            let ingredient = ingredients![indexPath.row]
+            cell.configCell(ingredient)
+            
+    //        cell.accessoryType = ingredients![indexPath.row].isCellSelected ? .checkmark : .none
+    //        print(ingredient.name as Any , "And" , ingredient.isCellSelected)
+            if selectedIngredients.contains(ingredient) {
+                cell.accessoryType = .checkmark
+            } else {
+                cell.accessoryType = .none
+            }
+            return cell
         }
-        let ingredient = ingredients![indexPath.row]
-        cell.configCell(ingredient)
-        cell.accessoryType = ingredients![indexPath.row].isCellSelected ? .checkmark : .none
-        return cell
-    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         setSelectedIngredients()
@@ -115,8 +122,6 @@ extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
         return .delete
     }
     
-    
-    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completionHandler) in
@@ -129,9 +134,7 @@ extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
                     }
                 }
             }
-            Constants.context.delete(ingredientToRemove)
-            
-            
+            Constants.context.delete(ingredientToRemove)            
             
             do {
                 try Constants.context.save()
@@ -172,12 +175,13 @@ extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
 
 extension IngredientsVC: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        print("viewController from ingredientsVC \(viewController)")
         if viewController.isKind(of: AddEditTableVC.self) {
             for i in selectedIngredients {
                 recipeToEdit?.addToIngredients(i)
             }
             (viewController as? AddEditTableVC)?.recipeToEdit = recipeToEdit
-            
+
         }
     }
 }

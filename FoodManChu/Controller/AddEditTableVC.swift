@@ -17,10 +17,13 @@ class AddEditTableVC: UITableViewController {
     @IBOutlet weak var addInstructionsLabel: UILabel!
     
     var ingredientsToReset = [Ingredient]()
+    var previousVC = RecipeDetailsVC()
+    var delegate: ModalHandler?
     
     var recipeToEdit: Recipe?
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.delegate = self
         configureUI()
     }
     
@@ -33,6 +36,7 @@ class AddEditTableVC: UITableViewController {
     override func viewDidDisappear(_ animated: Bool) {
         print("AddEditTable viewdidDisapear")
         resetIngredients()
+        delegate?.modalDismissed(recipe: recipeToEdit!)
     }
     
     func resetIngredients() {
@@ -46,6 +50,7 @@ class AddEditTableVC: UITableViewController {
             }
             do {
                 try Constants.context.save()
+                previousVC.recipeToEdit = recipeToEdit
             }
             catch {
                 print(error)
@@ -56,6 +61,7 @@ class AddEditTableVC: UITableViewController {
     }
     
     func configureUI() {
+       
         if (recipeToEdit?.ingredients?.count)! > 0 {
             addIngredientsLabel.text! = ""
             let ingredients = recipeToEdit?.ingredients as! Set<Ingredient>
@@ -72,6 +78,20 @@ class AddEditTableVC: UITableViewController {
             if let destination = segue.destination as? IngredientsVC {
                 destination.recipeToEdit = recipeToEdit
             }
+        }
+    }
+}
+
+extension AddEditTableVC: UINavigationControllerDelegate {
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        print("\nkicked off \(viewController)")
+        if viewController.isKind(of: RecipeDetailsVC.self) {
+            print("holy crap")
+//            for i in selectedIngredients {
+//                recipeToEdit?.addToIngredients(i)
+//            }
+            (viewController as? RecipeDetailsVC)?.recipeToEdit = recipeToEdit
+            
         }
     }
 }

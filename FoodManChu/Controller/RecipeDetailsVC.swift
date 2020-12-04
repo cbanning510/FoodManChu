@@ -5,9 +5,24 @@
 //  Created by chris on 12/1/20.
 //
 
+//protocol EditViewControllerDelegate: class {
+//    func editViewControllerDidCancel(_ editViewController: RecipeDetailsVC)
+//    func editViewControllerDidFinish(_ editViewController: RecipeDetailsVC)
+//}
+
+protocol ModalHandler {
+    func modalDismissed(recipe: Recipe)
+}
+
 import UIKit
 
-class RecipeDetailsVC: UIViewController {
+class RecipeDetailsVC: UIViewController, ModalHandler {
+    func modalDismissed (recipe: Recipe) {
+        print("recipe received is:\n \(recipe)")
+        recipeToEdit = recipe
+        recipeIngredients = (recipeToEdit!.ingredients?.allObjects as? [Ingredient])!
+        displayIngredientList()
+    }
     
     @IBOutlet weak var recipeTitleLabel: UILabel!
     @IBOutlet weak var recipeImage: UIImageView!
@@ -21,23 +36,33 @@ class RecipeDetailsVC: UIViewController {
     var isIngredientsSelected = true
     var recipeIngredients = [Ingredient]()
     var recipeInstructions = [Instruction]()
+    //var delegate: EditViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        //navigationController?.delegate = self
         recipeIngredients = (recipeToEdit!.ingredients?.allObjects as? [Ingredient])!
         recipeInstructions = (recipeToEdit!.instructions?.allObjects as? [Instruction])!
         instructionsUnderlineView.isHidden = true
         displayIngredientList()
+        recipeTitleLabel.text = recipeToEdit?.name
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("Recipe Details Appeared!!!")
+        print("Recipe Details DidAppear!!!")
         //configureUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("Recipe Details WillAppear!!!")
+    }
+    
     func configureUI() {
+        print("configureUI in RecipeDetails")
+        print("recipeToEdit is: \(recipeToEdit!.ingredients!.count)")
         recipeImage.addBlackGradientLayerInBackground(frame: recipeImage.bounds, colors:[.clear, #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.747270976)])
         ingredientsUnderlineView.addBorder(toSide: .Bottom, withColor: UIColor.red.cgColor, andThickness: 44.0)
         addBorder(view: ingredientsUnderlineView)
@@ -87,6 +112,7 @@ class RecipeDetailsVC: UIViewController {
         if segue.identifier == "AddEditTableSegue" {
             if let destVC = segue.destination as? UINavigationController,
                 let targetController = destVC.topViewController as? AddEditTableVC {
+                targetController.delegate = self
                 targetController.recipeToEdit = recipeToEdit
             }
         }
@@ -127,5 +153,28 @@ extension UIView {
            layer.addSublayer(border)
        }
 }
+
+//extension RecipeDetailsVC: UIAdaptivePresentationControllerDelegate {
+//    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+//        // By following the parent ViewController delegate methods,
+//        // you can reload the tableview, pass values and so on.
+//        self.delegate?.editViewControllerDidFinish(self)
+//        print("ahhhhhhh")
+//    }
+//}
+
+//extension RecipeDetailsVC: UINavigationControllerDelegate {
+//    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+//        print("\nview Controller is: \(viewController)")
+        //if viewController.isKind(of: RecipeDetailsVC.self) {
+            //print("holy crap")
+//            for i in selectedIngredients {
+//                recipeToEdit?.addToIngredients(i)
+//            }
+            //(viewController as? RecipeDetailsVC)?.recipeToEdit = recipeToEdit
+            
+       // }
+   // }
+//}
 
 
