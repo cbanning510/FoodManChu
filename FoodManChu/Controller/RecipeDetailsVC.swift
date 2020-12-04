@@ -31,6 +31,12 @@ class RecipeDetailsVC: UIViewController {
         displayIngredientList()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        print("Recipe Details Appeared!!!")
+        //configureUI()
+    }
+    
     func configureUI() {
         recipeImage.addBlackGradientLayerInBackground(frame: recipeImage.bounds, colors:[.clear, #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.747270976)])
         ingredientsUnderlineView.addBorder(toSide: .Bottom, withColor: UIColor.red.cgColor, andThickness: 44.0)

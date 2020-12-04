@@ -12,7 +12,6 @@ class IngredientsVC: UIViewController, NSFetchedResultsControllerDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     var AddEditVC: AddEditTableVC?
-
     var ingredients: [Ingredient]?
     var selectedIngredients = [Ingredient]()
     var recipeToEdit: Recipe?
@@ -22,12 +21,24 @@ class IngredientsVC: UIViewController, NSFetchedResultsControllerDelegate {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
+        navigationController?.delegate = self
         attemptIngredientFetch()
         selectedIngredients = recipeToEdit?.ingredients?.allObjects as! [Ingredient]
         self.tableView.allowsMultipleSelection = true
         self.tableView.allowsMultipleSelectionDuringEditing = true
+        setSelectedIngredients()
     }
+    
+    func setSelectedIngredients() {
+        for i in ingredients! {
+            if selectedIngredients.contains(i) {
+                i.isCellSelected = true
+            }
+        }
+    }
+    
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        print(selectedIngredients)
         let alert = UIAlertController(title: "Add Ingredient", message: "Ingredient name?", preferredStyle: .alert)
         alert.addTextField()
         
@@ -78,9 +89,21 @@ extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        setSelectedIngredients()
         let ingredient = ingredients![indexPath.row]
-        selectedIngredients.append(ingredient)
         ingredient.isCellSelected.toggle()
+        
+        if ingredient.isCellSelected {
+            selectedIngredients.append(ingredient)
+        } else {
+            for (index, element) in selectedIngredients.enumerated() {
+                if element.name == ingredient.name {
+                    selectedIngredients.remove(at: index)
+                    recipeToEdit?.removeFromIngredients(ingredient)
+                }
+            }
+            
+        }
         tableView.reloadRows(at:[indexPath],with:.none)
     }
     
@@ -92,14 +115,24 @@ extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
         return .delete
     }
     
-
+    
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (action, view, completionHandler) in
             let ingredientToRemove = self.ingredients![indexPath.row]
+            if self.selectedIngredients.contains(ingredientToRemove) {
+                for (index, element) in self.selectedIngredients.enumerated() {
+                    if element.name == ingredientToRemove.name {
+                        self.selectedIngredients.remove(at: index)
+                        self.recipeToEdit?.removeFromIngredients(element)
+                    }
+                }
+            }
             Constants.context.delete(ingredientToRemove)
-
+            
+            
+            
             do {
                 try Constants.context.save()
             }
@@ -119,7 +152,7 @@ extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
             let saveButton = UIAlertAction(title: "Save", style: .default) { (action) in
                 let textfield = alert.textFields![0]
                 ingredientToEdit.name = textfield.text
-              
+                
                 do {
                     try Constants.context.save()
                 }
@@ -136,5 +169,19 @@ extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
         return configuration
     }
 }
-    
+
+extension IngredientsVC: UINavigationControllerDelegate {
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if viewController.isKind(of: AddEditTableVC.self) {
+            for i in selectedIngredients {
+                recipeToEdit?.addToIngredients(i)
+            }
+            (viewController as? AddEditTableVC)?.recipeToEdit = recipeToEdit
+            
+        }
+    }
+}
+
+
+
 

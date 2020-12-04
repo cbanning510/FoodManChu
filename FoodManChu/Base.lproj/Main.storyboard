@@ -545,6 +545,10 @@
                     </navigationItem>
                     <size key="freeformSize" width="375" height="1200"/>
                     <connections>
+                        <outlet property="addIngredientsLabel" destination="v0x-4z-wYO" id="xsl-ya-QXr"/>
+                        <outlet property="addInstructionsLabel" destination="PTN-Ji-Nlp" id="4g3-lP-kfi"/>
+                        <outlet property="recipeDescriptionTextField" destination="bhj-rb-L90" id="zyb-l0-rLj"/>
+                        <outlet property="recipeNameTextField" destination="AFh-i1-ewK" id="ofD-dD-vcr"/>
                         <outlet property="tableView" destination="L8d-Ub-DTy" id="qAp-jB-XhY"/>
                     </connections>
                 </tableViewController>
@@ -622,6 +626,7 @@
                         <barButtonItem title="Item" id="wJu-ZI-q4m"/>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Ingredients" id="J2g-tG-HaV">
+                        <barButtonItem key="backBarButtonItem" title="Cherry" id="jVY-kU-oxU"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="BHp-q1-kRE">
                             <connections>
                                 <action selector="addButtonPressed:" destination="WuA-t1-JVh" id="y89-VC-qEW"/>
