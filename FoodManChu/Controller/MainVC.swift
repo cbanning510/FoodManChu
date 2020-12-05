@@ -8,7 +8,11 @@
 import UIKit
 import CoreData
 
-class MainVC: UIViewController {
+class MainVC: UIViewController, ModalHandler {
+    func modalDismissed(recipe: Recipe) {
+        attemptFetch()
+    }
+    
     
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     @IBOutlet weak var tableView: UITableView!
@@ -29,7 +33,12 @@ class MainVC: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        print("view will apear in MainVC!!!")
         attemptFetch()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        print("viewDidApear in MainVC")
     }
     
     func attemptFetch() {
@@ -71,12 +80,31 @@ extension MainVC: UITableViewDelegate, UITableViewDataSource {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "DetailSegue" {
+            print("no")
             if let destination = segue.destination as? RecipeDetailsVC {
                 if let recipe = sender as? Recipe {
                     destination.recipeToEdit = recipe
                 }
             }
         }
+        if segue.identifier == "AddRecipeSegue" {
+            print("yes")
+            if let destVC = segue.destination as? UINavigationController,
+               let targetController = destVC.topViewController as? AddEditTableVC {
+                targetController.delegate = self
+                //targetController.recipeToEdit = recipeToEdit
+                let recipe = Recipe(context: Constants.context)
+                print("is recipe nil? \(recipe)")
+                targetController.recipeToEdit = recipe
+            }
+        }
+        
+        //            if let destination = segue.destination as? AddEditTableVC {
+        //                let recipe = Recipe(context: Constants.context)a
+        //                recipe.name = ""
+        //                destination.recipeToEdit = recipe
+        //            }
+    //}
     }
 }
 

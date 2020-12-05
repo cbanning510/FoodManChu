@@ -5,11 +5,6 @@
 //  Created by chris on 12/1/20.
 //
 
-//protocol EditViewControllerDelegate: class {
-//    func editViewControllerDidCancel(_ editViewController: RecipeDetailsVC)
-//    func editViewControllerDidFinish(_ editViewController: RecipeDetailsVC)
-//}
-
 protocol ModalHandler {
     func modalDismissed(recipe: Recipe)
 }
@@ -18,10 +13,12 @@ import UIKit
 
 class RecipeDetailsVC: UIViewController, ModalHandler {
     func modalDismissed (recipe: Recipe) {
-        print("recipe received is:\n \(recipe)")
+        //print("recipe received is:\n \(recipe)")
         recipeToEdit = recipe
         recipeIngredients = (recipeToEdit!.ingredients?.allObjects as? [Ingredient])!
         displayIngredientList()
+        configureUI()
+        
     }
     
     @IBOutlet weak var recipeTitleLabel: UILabel!
@@ -46,27 +43,29 @@ class RecipeDetailsVC: UIViewController, ModalHandler {
         recipeInstructions = (recipeToEdit!.instructions?.allObjects as? [Instruction])!
         instructionsUnderlineView.isHidden = true
         displayIngredientList()
-        recipeTitleLabel.text = recipeToEdit?.name
+        recipeImage.addBlackGradientLayerInBackground(frame: recipeImage.bounds, colors:[.clear, #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.6382170377)])
+//        recipeTitleLabel.text = recipeToEdit?.name
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("Recipe Details DidAppear!!!")
+        //print("Recipe Details DidAppear!!!")
         //configureUI()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("Recipe Details WillAppear!!!")
+        //print("Recipe Details WillAppear!!!")
     }
     
     func configureUI() {
-        print("configureUI in RecipeDetails")
-        print("recipeToEdit is: \(recipeToEdit!.ingredients!.count)")
-        recipeImage.addBlackGradientLayerInBackground(frame: recipeImage.bounds, colors:[.clear, #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.747270976)])
+        //print("configureUI in RecipeDetails")
+        //print("recipeToEdit is: \(recipeToEdit!.ingredients!.count)")
+        
         ingredientsUnderlineView.addBorder(toSide: .Bottom, withColor: UIColor.red.cgColor, andThickness: 44.0)
         addBorder(view: ingredientsUnderlineView)
         addBorder(view: instructionsUnderlineView)
+        recipeTitleLabel.text = recipeToEdit?.name
     }
     
     func displayIngredientList() {

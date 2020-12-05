@@ -85,8 +85,6 @@ extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
             let ingredient = ingredients![indexPath.row]
             cell.configCell(ingredient)
             
-    //        cell.accessoryType = ingredients![indexPath.row].isCellSelected ? .checkmark : .none
-    //        print(ingredient.name as Any , "And" , ingredient.isCellSelected)
             if selectedIngredients.contains(ingredient) {
                 cell.accessoryType = .checkmark
             } else {
@@ -174,14 +172,17 @@ extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension IngredientsVC: UINavigationControllerDelegate {
+    
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        print("viewController from ingredientsVC \(viewController)")
+        print("back button?")
         if viewController.isKind(of: AddEditTableVC.self) {
-            for i in selectedIngredients {
-                recipeToEdit?.addToIngredients(i)
-            }
-            (viewController as? AddEditTableVC)?.recipeToEdit = recipeToEdit
-
+            //print("viewController from ingredientsVC \(viewController)")
+            //don't add to recipeToEdit until save
+//            for i in selectedIngredients {
+//                recipeToEdit?.addToIngredients(i)
+//            }
+            (viewController as? AddEditTableVC)?.selectedIngredients = selectedIngredients
+            //(viewController as? AddEditTableVC)?.recipeToEdit = recipeToEdit
         }
     }
 }
