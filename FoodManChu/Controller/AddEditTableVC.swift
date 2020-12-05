@@ -131,6 +131,8 @@ class AddEditTableVC: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "IngredientSegue" {
             if let destination = segue.destination as? IngredientsVC {
+                recipeToEdit?.name = recipeNameTextField.text
+                recipeToEdit?.summaryDescription = recipeDescriptionTextField.text
                 destination.recipeToEdit = recipeToEdit
             }
         }

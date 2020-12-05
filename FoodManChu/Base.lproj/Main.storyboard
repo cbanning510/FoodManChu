@@ -188,18 +188,18 @@
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" distribution="fillEqually" spacing="70" translatesAutoresizingMaskIntoConstraints="NO" id="pG2-hc-prW">
-                                                <rect key="frame" x="103" y="279" width="232" height="30"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="70" translatesAutoresizingMaskIntoConstraints="NO" id="pG2-hc-prW">
+                                                <rect key="frame" x="40" y="279" width="295" height="30"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ae4-UQ-mr6">
-                                                        <rect key="frame" x="0.0" y="0.0" width="81" height="30"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="112.5" height="30"/>
                                                         <state key="normal" title="Ingredients"/>
                                                         <connections>
                                                             <action selector="ingredientsButtonPressed:" destination="Nxy-WU-gIT" eventType="touchUpInside" id="l05-5Q-zus"/>
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BMb-cL-bs4">
-                                                        <rect key="frame" x="151" y="0.0" width="81" height="30"/>
+                                                        <rect key="frame" x="182.5" y="0.0" width="112.5" height="30"/>
                                                         <state key="normal" title="Instructions"/>
                                                         <connections>
                                                             <action selector="instructionsButtonPressed:" destination="Nxy-WU-gIT" eventType="touchUpInside" id="I4U-Tf-4Hv"/>
@@ -207,15 +207,15 @@
                                                     </button>
                                                 </subviews>
                                             </stackView>
-                                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JXZ-iT-csn">
-                                                <rect key="frame" x="92.5" y="319" width="102" height="1"/>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JXZ-iT-csn">
+                                                <rect key="frame" x="25.5" y="319" width="142" height="1"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="1" id="no3-FR-0JD"/>
                                                 </constraints>
                                             </view>
-                                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2Fo-PY-NOr">
-                                                <rect key="frame" x="243.5" y="319" width="102" height="1"/>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Fo-PY-NOr">
+                                                <rect key="frame" x="208" y="319" width="142" height="1"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="1" id="Ccf-Fu-5VI"/>
@@ -236,7 +236,7 @@
                                             <constraint firstItem="iMl-8N-8Ju" firstAttribute="top" secondItem="Tov-p9-uNe" secondAttribute="top" constant="208" id="1Ui-B8-HmU"/>
                                             <constraint firstItem="JXZ-iT-csn" firstAttribute="width" secondItem="Ae4-UQ-mr6" secondAttribute="width" multiplier="1.26222" id="2bt-Jy-iVi"/>
                                             <constraint firstItem="JXZ-iT-csn" firstAttribute="centerX" secondItem="Ae4-UQ-mr6" secondAttribute="centerX" id="6Xe-dV-azc"/>
-                                            <constraint firstItem="pG2-hc-prW" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Tov-p9-uNe" secondAttribute="leading" constant="40" id="AOK-is-w8I"/>
+                                            <constraint firstItem="pG2-hc-prW" firstAttribute="leading" secondItem="Tov-p9-uNe" secondAttribute="leading" constant="40" id="AOK-is-w8I"/>
                                             <constraint firstItem="kVT-9r-6TO" firstAttribute="top" secondItem="Tov-p9-uNe" secondAttribute="top" id="AkL-os-yg3"/>
                                             <constraint firstItem="2Fo-PY-NOr" firstAttribute="top" secondItem="pG2-hc-prW" secondAttribute="bottom" constant="10" id="RbS-bV-OAd"/>
                                             <constraint firstAttribute="bottom" relation="lessThanOrEqual" secondItem="Qq7-As-tQv" secondAttribute="bottom" constant="843" id="ThG-0N-3tt"/>
@@ -244,7 +244,7 @@
                                             <constraint firstItem="2Fo-PY-NOr" firstAttribute="centerX" secondItem="BMb-cL-bs4" secondAttribute="centerX" id="W4W-hf-mrI"/>
                                             <constraint firstItem="pG2-hc-prW" firstAttribute="top" secondItem="kVT-9r-6TO" secondAttribute="bottom" constant="29" id="WeA-r4-ESs"/>
                                             <constraint firstItem="JXZ-iT-csn" firstAttribute="top" secondItem="pG2-hc-prW" secondAttribute="bottom" constant="10" id="YEg-Mb-E78"/>
-                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="pG2-hc-prW" secondAttribute="trailing" constant="40" id="ge8-lB-gsM"/>
+                                            <constraint firstAttribute="trailing" secondItem="pG2-hc-prW" secondAttribute="trailing" constant="40" id="ge8-lB-gsM"/>
                                             <constraint firstItem="2Fo-PY-NOr" firstAttribute="width" secondItem="BMb-cL-bs4" secondAttribute="width" multiplier="1.26222" id="kEL-0x-n5t"/>
                                             <constraint firstItem="kVT-9r-6TO" firstAttribute="leading" secondItem="Tov-p9-uNe" secondAttribute="leading" id="p3p-07-VNc"/>
                                             <constraint firstAttribute="trailing" secondItem="iMl-8N-8Ju" secondAttribute="trailing" constant="20" id="rH7-DW-EhO"/>
@@ -521,14 +521,14 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="IngredientCell" id="Psf-s2-ABy" userLabel="IngredientCell" customClass="IngredientCell" customModule="FoodManChu" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="20"/>
+                                        <rect key="frame" x="0.0" y="28" width="375" height="20.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Psf-s2-ABy" id="WH4-K5-P7k">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="20"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="20.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kmM-cb-Tn2">
-                                                    <rect key="frame" x="16" y="0.0" width="359" height="20"/>
+                                                    <rect key="frame" x="16" y="0.0" width="359" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -597,7 +597,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Rcb-gL-sN7"/>
+        <segue reference="sBo-lf-HgR"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="chicken-parmesan-recipe-1" width="360" height="360"/>
