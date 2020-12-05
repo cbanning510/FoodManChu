@@ -23,7 +23,10 @@ class IngredientsVC: UIViewController, NSFetchedResultsControllerDelegate {
         tableView.dataSource = self
         navigationController?.delegate = self
         attemptIngredientFetch()
-        selectedIngredients = recipeToEdit?.ingredients?.allObjects as! [Ingredient]
+        if let ingredients = recipeToEdit?.ingredients {
+            selectedIngredients = ingredients.allObjects as! [Ingredient]
+        }
+        
         self.tableView.allowsMultipleSelection = true
         self.tableView.allowsMultipleSelectionDuringEditing = true
         setSelectedIngredients()

@@ -19,14 +19,17 @@ class AddEditTableVC: UITableViewController {
     var ingredientsToReset = [Ingredient]()
     var previousVC = RecipeDetailsVC()
     var delegate: ModalHandler?
-    //var newRecipeAdddelegate: ModalHandler?
+    var newRecipeAddDelegate: newRecipeModalHandler?
     var recipeToEdit: Recipe?
     var recipeUnchanged: Recipe?
     var selectedIngredients = [Ingredient]()
+    var tempRecipeName: String?
+    var tempSummaryDescription: String?
+    var isNewRecipe = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("recipeToEdit at VDL in AddEditTableVC \(recipeToEdit!)")
+        //print("recipeToEdit at VDL in AddEditTableVC \(recipeToEdit!)")
         navigationController?.delegate = self
         configureUI()
     }
@@ -47,8 +50,17 @@ class AddEditTableVC: UITableViewController {
     
     func configureUI() {
         print("AddEdit configureUI!!!")
-        recipeNameTextField.text = recipeToEdit?.name
-        recipeDescriptionTextField.text = recipeToEdit?.summaryDescription
+        if let name = tempRecipeName {
+            recipeNameTextField.text = name
+        } else {
+            recipeNameTextField.text = recipeToEdit?.name
+        }
+        if let description = tempSummaryDescription {
+            recipeDescriptionTextField.text = description
+        } else {
+            recipeDescriptionTextField.text = recipeToEdit?.summaryDescription
+        }
+        
         if selectedIngredients.count == 0 {
             if let recipeToEdit = recipeToEdit {
                 
@@ -80,23 +92,41 @@ class AddEditTableVC: UITableViewController {
     }
     
     @IBAction func saveButtonPressed(_ sender: UIBarButtonItem) {
-        print(":save button pressed recipeToEdit is \(recipeToEdit!)")
-        recipeToEdit?.summaryDescription = recipeDescriptionTextField.text
-        recipeToEdit?.name = recipeNameTextField.text
-        for i in selectedIngredients {
-                        recipeToEdit?.addToIngredients(i)
-                    }
-        do {
-            try Constants.context.save()
-        }
-        catch {
-            print(error)
-        }
-        self.dismiss(animated: true, completion: nil)
+        if isNewRecipe {
+            let recipe = Recipe(context: Constants.context)
+            recipe.summaryDescription = recipeDescriptionTextField.text!
+            recipe.name = recipeNameTextField.text
+            for i in selectedIngredients {
+                            recipe.addToIngredients(i)
+            }
+            
+            do {
+                try Constants.context.save()
+                newRecipeAddDelegate?.dismissModal()
+            }
+            catch {
+                print(error)
+            }
+            self.dismiss(animated: true, completion: nil)
+        } else  {
+            recipeToEdit?.summaryDescription = recipeDescriptionTextField.text!
+            recipeToEdit?.name = recipeNameTextField.text!
+            
+            for i in selectedIngredients {
+                            recipeToEdit?.addToIngredients(i)
+                        }
+            do {
+                try Constants.context.save()
+            }
+            catch {
+                print(error)
+            }
+            self.dismiss(animated: true, completion: nil)
+        }       
     }
     
     @IBAction func cancelButtonPressed(_ sender: UIBarButtonItem) {
-        
+    
         recipeToEdit = recipeUnchanged
         do {
             try Constants.context.save()
@@ -131,8 +161,8 @@ class AddEditTableVC: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "IngredientSegue" {
             if let destination = segue.destination as? IngredientsVC {
-                recipeToEdit?.name = recipeNameTextField.text
-                recipeToEdit?.summaryDescription = recipeDescriptionTextField.text
+                tempSummaryDescription = recipeDescriptionTextField.text!
+                tempRecipeName = recipeNameTextField.text!
                 destination.recipeToEdit = recipeToEdit
             }
         }

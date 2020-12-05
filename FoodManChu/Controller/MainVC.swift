@@ -4,12 +4,21 @@
 //
 //  Created by chris on 11/23/20.
 //
+protocol newRecipeModalHandler {
+    func dismissModal()
+}
 
 import UIKit
 import CoreData
 
-class MainVC: UIViewController, ModalHandler {
+class MainVC: UIViewController, ModalHandler, newRecipeModalHandler {
+    func dismissModal() {
+        print("dismiss modal for new recipe from MainVC")
+        attemptFetch()
+    }
+    
     func modalDismissed(recipe: Recipe) {
+        print("modaldsimissed from MainVC")
         attemptFetch()
     }
     
@@ -91,20 +100,14 @@ extension MainVC: UITableViewDelegate, UITableViewDataSource {
             print("yes")
             if let destVC = segue.destination as? UINavigationController,
                let targetController = destVC.topViewController as? AddEditTableVC {
-                targetController.delegate = self
+                targetController.newRecipeAddDelegate = self
                 //targetController.recipeToEdit = recipeToEdit
-                let recipe = Recipe(context: Constants.context)
-                print("is recipe nil? \(recipe)")
-                targetController.recipeToEdit = recipe
+                //let recipe = Recipe(context: Constants.context)
+                //print("is recipe nil? \(recipe)")
+                targetController.isNewRecipe = true
+                //targetController. recipeToEdit = recipe
             }
         }
-        
-        //            if let destination = segue.destination as? AddEditTableVC {
-        //                let recipe = Recipe(context: Constants.context)a
-        //                recipe.name = ""
-        //                destination.recipeToEdit = recipe
-        //            }
-    //}
     }
 }
 
