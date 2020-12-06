@@ -467,6 +467,31 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection headerTitle="SELECT CATEGORY" id="kqf-0c-9wb">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="RWh-q6-7ag">
+                                        <rect key="frame" x="0.0" y="737" width="375" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="RWh-q6-7ag" id="H6V-ct-RKe">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textField opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="  Category" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dnd-qQ-WHk">
+                                                    <rect key="frame" x="16" y="0.0" width="95" height="34"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailingMargin" secondItem="dnd-qQ-WHk" secondAttribute="trailing" id="6IK-Jt-dY1"/>
+                                                <constraint firstItem="dnd-qQ-WHk" firstAttribute="top" secondItem="H6V-ct-RKe" secondAttribute="topMargin" id="Mr9-5p-Gx5"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="dnd-qQ-WHk" secondAttribute="bottom" id="c7q-T2-m0s"/>
+                                                <constraint firstItem="dnd-qQ-WHk" firstAttribute="leading" secondItem="H6V-ct-RKe" secondAttribute="leadingMargin" id="ezR-hj-gfF"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                         </sections>
                         <connections>
                             <outlet property="dataSource" destination="snC-8z-S8T" id="l0m-hK-q6h"/>
@@ -487,8 +512,10 @@
                     </navigationItem>
                     <size key="freeformSize" width="375" height="1200"/>
                     <connections>
+                        <outlet property="addIngredientsCell" destination="xPH-Wl-cjO" id="NJC-dB-h3o"/>
                         <outlet property="addIngredientsLabel" destination="v0x-4z-wYO" id="xsl-ya-QXr"/>
                         <outlet property="addInstructionsLabel" destination="PTN-Ji-Nlp" id="4g3-lP-kfi"/>
+                        <outlet property="categoryTextField" destination="dnd-qQ-WHk" id="lrx-GZ-AOp"/>
                         <outlet property="recipeDescriptionTextField" destination="bhj-rb-L90" id="zyb-l0-rLj"/>
                         <outlet property="recipeNameTextField" destination="AFh-i1-ewK" id="ofD-dD-vcr"/>
                         <outlet property="tableView" destination="L8d-Ub-DTy" id="qAp-jB-XhY"/>
@@ -496,7 +523,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hVS-w4-Vbv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6321" y="-125"/>
+            <point key="canvasLocation" x="6320.8000000000002" y="-125.03748125937032"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="GCk-EJ-URC">

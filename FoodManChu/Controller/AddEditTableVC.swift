@@ -8,24 +8,32 @@
 import UIKit
 import CoreData
 
-class AddEditTableVC: UITableViewController {
+class AddEditTableVC: UITableViewController  {
     
     @IBOutlet weak var recipeNameTextField: UITextField!
     @IBOutlet weak var recipeDescriptionTextField: UITextField!
+    @IBOutlet weak var addIngredientsCell: UITableViewCell!
     
+    @IBOutlet weak var categoryTextField: UITextField!
     @IBOutlet weak var addIngredientsLabel: UILabel!
     @IBOutlet weak var addInstructionsLabel: UILabel!
+    //@IBOutlet weak var categoryPicker: UIPickerView!
     
     var ingredientsToReset = [Ingredient]()
     var previousVC = RecipeDetailsVC()
     var delegate: ModalHandler?
+    var categories: [Category]?
+    var categoryPickerData: [String] = [String]()
+    var categoryPicker  = UIPickerView()
     var newRecipeAddDelegate: newRecipeModalHandler?
     var recipeToEdit: Recipe?
     var recipeUnchanged: Recipe?
     var selectedIngredients = [Ingredient]()
     var tempRecipeName: String?
     var tempSummaryDescription: String?
+    var toolBar = UIToolbar()
     var isNewRecipe = false
+    var isPickerVisible = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +46,10 @@ class AddEditTableVC: UITableViewController {
             }
         }
         configureUI()
+        fetchCategories()
+        categoryPicker.delegate = self
+        categoryPicker.dataSource = self
+        createTapGestureForCategoryPicker()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -52,6 +64,70 @@ class AddEditTableVC: UITableViewController {
         }
     }
     
+    func populateCategoryPicker() {
+        for category in categories! {
+            categoryPickerData.append(category.name!)
+        }
+    }
+    
+    func fetchCategories() {
+        let request = Category.fetchRequest() as NSFetchRequest<Category>
+        do {
+            self.categories = try Constants.context.fetch(request)
+        } catch let err {
+            print(err)
+        }
+    }
+    
+    func enableTextFields() {
+        recipeNameTextField.isUserInteractionEnabled = true
+        recipeDescriptionTextField.isUserInteractionEnabled = true
+        addIngredientsCell.isUserInteractionEnabled = true
+    }
+    func disableTextFields() {
+        recipeNameTextField.isUserInteractionEnabled = false
+        recipeDescriptionTextField.isUserInteractionEnabled = false
+        addIngredientsCell.isUserInteractionEnabled = false
+
+    }
+    
+    func createTapGestureForCategoryPicker() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tap(gestureReconizer:)))
+        categoryTextField.addGestureRecognizer(tap)
+        categoryTextField.isUserInteractionEnabled = true
+    }
+    
+    @objc func tap(gestureReconizer: UITapGestureRecognizer) {
+        print("")
+        if !self.isPickerVisible {
+            populateCategoryPicker()
+            self.isPickerVisible = true
+            disableTextFields()
+            categoryPicker.isHidden = false
+            categoryPicker.backgroundColor = UIColor.white
+            categoryPicker.setValue(UIColor.black, forKey: "textColor")
+            categoryPicker.autoresizingMask = .flexibleWidth
+            categoryPicker.contentMode = .center
+            categoryPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 300)
+            view.addSubview(categoryPicker)
+                    
+            toolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 50))
+            toolBar.barStyle = .default
+            toolBar.isTranslucent = true
+            toolBar.sizeToFit()
+            toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(onDoneButtonTapped))]
+            view.addSubview(toolBar)
+        }
+    }
+    
+    @objc func onDoneButtonTapped() {
+        toolBar.removeFromSuperview()
+        categoryPicker.removeFromSuperview()
+        isPickerVisible = false
+        enableTextFields()
+        configureUI()
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "IngredientSegue" {
@@ -63,10 +139,11 @@ class AddEditTableVC: UITableViewController {
                 destination.selectedIngredients = selectedIngredients
             }
         }
+        
     }
     
     func configureUI() {
-        
+        categoryTextField.text = recipeToEdit?.categoryType
         if let name = tempRecipeName {
             recipeNameTextField.text = name
         } else {
@@ -169,6 +246,36 @@ extension AddEditTableVC: UINavigationControllerDelegate {
             (viewController as? RecipeDetailsVC)?.recipeToEdit = recipeToEdit
         }
     }
+}
+
+extension AddEditTableVC: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return categoryPickerData.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return categoryPickerData[row]
+    }
+    
+    func save() {
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+    }
+    
+    // Capture the picker view selection
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+            recipeToEdit!.categoryType = categoryPickerData[row]
+        
+        do {
+            try Constants.context.save()
+        } catch let err {
+            print(err)
+        }
+    }
+
 }
 
 
