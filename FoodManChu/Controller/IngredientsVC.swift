@@ -23,9 +23,10 @@ class IngredientsVC: UIViewController, NSFetchedResultsControllerDelegate {
         tableView.dataSource = self
         navigationController?.delegate = self
         attemptIngredientFetch()
-        if let ingredients = recipeToEdit?.ingredients {
-            selectedIngredients = ingredients.allObjects as! [Ingredient]
-        }
+        //print("recipeToEdit received in ImngredientsVC\n \(recipeToEdit!)")
+//        if let recipeToEditIngredients = recipeToEdit?.ingredients {
+//            selectedIngredients = recipeToEditIngredients.allObjects as! [Ingredient]
+//        }
         
         self.tableView.allowsMultipleSelection = true
         self.tableView.allowsMultipleSelectionDuringEditing = true
@@ -107,7 +108,7 @@ extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
             for (index, element) in selectedIngredients.enumerated() {
                 if element.name == ingredient.name {
                     selectedIngredients.remove(at: index)
-                    recipeToEdit?.removeFromIngredients(ingredient)
+                    //recipeToEdit?.removeFromIngredients(ingredient)
                 }
             }
             
@@ -177,8 +178,11 @@ extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
 extension IngredientsVC: UINavigationControllerDelegate {
     
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        print("back button?")
+        
+        
         if viewController.isKind(of: AddEditTableVC.self) {
+            print("back button?")
+            print("selectedIngredients in IngredientVC going to AddEditTableVC is\n\(selectedIngredients)")
             //print("viewController from ingredientsVC \(viewController)")
             //don't add to recipeToEdit until save
 //            for i in selectedIngredients {

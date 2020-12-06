@@ -13,7 +13,7 @@ import UIKit
 
 class RecipeDetailsVC: UIViewController, ModalHandler {
     func modalDismissed (recipe: Recipe) {
-        //print("recipe received is:\n \(recipe)")
+        print("recipe ingredients received in REcipeDetails is:\n \(recipe.ingredients!.count)")
         recipeToEdit = recipe
         recipeIngredients = (recipeToEdit!.ingredients?.allObjects as? [Ingredient])!
         displayIngredientList()
