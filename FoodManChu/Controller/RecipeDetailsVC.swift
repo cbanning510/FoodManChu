@@ -13,12 +13,10 @@ import UIKit
 
 class RecipeDetailsVC: UIViewController, ModalHandler {
     func modalDismissed (recipe: Recipe) {
-        print("recipe ingredients received in REcipeDetails is:\n \(recipe.ingredients!.count)")
         recipeToEdit = recipe
         recipeIngredients = (recipeToEdit!.ingredients?.allObjects as? [Ingredient])!
         displayIngredientList()
-        configureUI()
-        
+        configureUI()        
     }
     
     @IBOutlet weak var recipeTitleLabel: UILabel!
@@ -59,10 +57,6 @@ class RecipeDetailsVC: UIViewController, ModalHandler {
     }
     
     func configureUI() {
-        //print("configureUI in RecipeDetails")
-        //print("recipeToEdit is: \(recipeToEdit!.ingredients!.count)")
-        
-        ingredientsUnderlineView.addBorder(toSide: .Bottom, withColor: UIColor.red.cgColor, andThickness: 44.0)
         addBorder(view: ingredientsUnderlineView)
         addBorder(view: instructionsUnderlineView)
         recipeTitleLabel.text = recipeToEdit?.name
@@ -153,27 +147,5 @@ extension UIView {
        }
 }
 
-//extension RecipeDetailsVC: UIAdaptivePresentationControllerDelegate {
-//    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-//        // By following the parent ViewController delegate methods,
-//        // you can reload the tableview, pass values and so on.
-//        self.delegate?.editViewControllerDidFinish(self)
-//        print("ahhhhhhh")
-//    }
-//}
-
-//extension RecipeDetailsVC: UINavigationControllerDelegate {
-//    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-//        print("\nview Controller is: \(viewController)")
-        //if viewController.isKind(of: RecipeDetailsVC.self) {
-            //print("holy crap")
-//            for i in selectedIngredients {
-//                recipeToEdit?.addToIngredients(i)
-//            }
-            //(viewController as? RecipeDetailsVC)?.recipeToEdit = recipeToEdit
-            
-       // }
-   // }
-//}
 
 
