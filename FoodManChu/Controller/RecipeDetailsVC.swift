@@ -45,6 +45,32 @@ class RecipeDetailsVC: UIViewController, ModalHandler {
 //        recipeTitleLabel.text = recipeToEdit?.name
     }
     
+    @IBAction func deleteButtonPressed(_ sender: UIBarButtonItem) {
+        
+        let alert = UIAlertController(title: "Delete Recipe", message: "Are you sure you want to delete this recipe?", preferredStyle: .alert)
+
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: { [self] (action) in
+            Constants.context.delete(recipeToEdit!)
+            
+            do {
+                try Constants.context.save()
+                navigationController?.popViewController(animated: true)
+            }
+            catch {
+                print(error)
+            }
+        })
+        
+        alert.addAction(deleteAction)
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        alert.addAction(cancelAction)
+
+        self.present(alert, animated: true, completion: nil)
+        
+        
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         //print("Recipe Details DidAppear!!!")

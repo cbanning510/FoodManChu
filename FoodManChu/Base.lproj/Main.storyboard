@@ -273,12 +273,19 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="gGi-Wf-FZz">
-                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="qGq-bE-a1M">
-                            <connections>
-                                <action selector="editButtonPressed:" destination="Nxy-WU-gIT" id="XYt-Xn-era"/>
-                                <segue destination="fod-oA-Kpu" kind="show" identifier="AddEditTableSegue" id="sBo-lf-HgR"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="edit" id="qGq-bE-a1M">
+                                <connections>
+                                    <action selector="editButtonPressed:" destination="Nxy-WU-gIT" id="XYt-Xn-era"/>
+                                    <segue destination="fod-oA-Kpu" kind="show" identifier="AddEditTableSegue" id="sBo-lf-HgR"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Item" image="trash" catalog="system" id="HUT-69-7t3">
+                                <connections>
+                                    <action selector="deleteButtonPressed:" destination="Nxy-WU-gIT" id="HxD-2i-4wH"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <size key="freeformSize" width="375" height="1200"/>
                     <connections>
@@ -521,14 +528,14 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="IngredientCell" id="Psf-s2-ABy" userLabel="IngredientCell" customClass="IngredientCell" customModule="FoodManChu" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="20.5"/>
+                                        <rect key="frame" x="0.0" y="28" width="375" height="20"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Psf-s2-ABy" id="WH4-K5-P7k">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="20.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="20"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kmM-cb-Tn2">
-                                                    <rect key="frame" x="16" y="0.0" width="359" height="20.5"/>
+                                                    <rect key="frame" x="16" y="0.0" width="359" height="20"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -601,6 +608,7 @@
     </inferredMetricsTieBreakers>
     <resources>
         <image name="chicken-parmesan-recipe-1" width="360" height="360"/>
+        <image name="trash" catalog="system" width="121" height="128"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

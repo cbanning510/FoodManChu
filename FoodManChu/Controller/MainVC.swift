@@ -34,9 +34,9 @@ class MainVC: UIViewController, ModalHandler, newRecipeModalHandler {
         tableView.delegate = self
         tableView.dataSource = self
         
-        generateDummyCategories()
-        generateDummyIngredients()
-        generateDummyRecipes()
+        //generateDummyCategories()
+        //generateDummyIngredients()
+        //generateDummyRecipes()
         
         attemptFetch()
     }
