@@ -11,47 +11,33 @@ protocol ModalHandler {
 
 import UIKit
 
-class RecipeDetailsVC: UIViewController, ModalHandler {
-    func modalDismissed (recipe: Recipe) {
-        recipeToEdit = recipe
-        recipeIngredients = (recipeToEdit!.ingredients?.allObjects as? [Ingredient])!
-        displayIngredientList()
-        configureUI()        
-    }
+class RecipeDetailsVC: UIViewController {
     
+    @IBOutlet weak var ingredientsUnderlineView: UIView!
+    @IBOutlet weak var instructionsUnderlineView: UIView!
+    @IBOutlet weak var listLabel: UILabel!
     @IBOutlet weak var recipeTitleLabel: UILabel!
     @IBOutlet weak var recipeImage: UIImageView!
-    
-    @IBOutlet weak var listLabel: UILabel!
-    
-    @IBOutlet weak var instructionsUnderlineView: UIView!
-    @IBOutlet weak var ingredientsUnderlineView: UIView!
     
     var recipeToEdit: Recipe?
     var isIngredientsSelected = true
     var recipeIngredients = [Ingredient]()
     var recipeInstructions = [Instruction]()
-    //var delegate: EditViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        //navigationController?.delegate = self
         recipeIngredients = (recipeToEdit!.ingredients?.allObjects as? [Ingredient])!
         recipeInstructions = (recipeToEdit!.instructions?.allObjects as? [Instruction])!
         instructionsUnderlineView.isHidden = true
         displayIngredientList()
         recipeImage.addBlackGradientLayerInBackground(frame: recipeImage.bounds, colors:[.clear, #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.6382170377)])
-//        recipeTitleLabel.text = recipeToEdit?.name
     }
     
     @IBAction func deleteButtonPressed(_ sender: UIBarButtonItem) {
-        
         let alert = UIAlertController(title: "Delete Recipe", message: "Are you sure you want to delete this recipe?", preferredStyle: .alert)
-
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: { [self] (action) in
             Constants.context.delete(recipeToEdit!)
-            
             do {
                 try Constants.context.save()
                 navigationController?.popViewController(animated: true)
@@ -62,25 +48,18 @@ class RecipeDetailsVC: UIViewController, ModalHandler {
         })
         
         alert.addAction(deleteAction)
-
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         alert.addAction(cancelAction)
-
         self.present(alert, animated: true, completion: nil)
-        
-        
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        //print("Recipe Details DidAppear!!!")
-        //configureUI()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        //print("Recipe Details WillAppear!!!")
-    }
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//    }
+//
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//    }
     
     func configureUI() {
         addBorder(view: ingredientsUnderlineView)
@@ -136,11 +115,19 @@ class RecipeDetailsVC: UIViewController, ModalHandler {
             }
         }
     }
- 
+}
+
+extension RecipeDetailsVC: ModalHandler {
+    func modalDismissed (recipe: Recipe) {
+        recipeToEdit = recipe
+        recipeIngredients = (recipeToEdit!.ingredients?.allObjects as? [Ingredient])!
+        displayIngredientList()
+        configureUI()
+    }
 }
 
 extension UIView{
-    // For insert layer in background
+    // image background gradient
     func addBlackGradientLayerInBackground(frame: CGRect, colors:[UIColor]){
         let gradient = CAGradientLayer()
         gradient.frame = frame

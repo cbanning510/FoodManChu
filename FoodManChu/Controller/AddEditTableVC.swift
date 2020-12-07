@@ -12,31 +12,47 @@ class AddEditTableVC: UITableViewController  {
     
     @IBOutlet weak var recipeNameTextField: UITextField!
     @IBOutlet weak var recipeDescriptionTextField: UITextField!
-    @IBOutlet weak var addIngredientsCell: UITableViewCell!
-    
     @IBOutlet weak var categoryTextField: UITextField!
     @IBOutlet weak var addIngredientsLabel: UILabel!
     @IBOutlet weak var addInstructionsLabel: UILabel!
+    @IBOutlet weak var addIngredientsCell: UITableViewCell!
     
-    var ingredientsToReset = [Ingredient]()
-    var previousVC = RecipeDetailsVC()
-    var delegate: ModalHandler?
     var categories: [Category]?
-    var categoryPickerData: [String] = [String]()
     var categoryPicker  = UIPickerView()
+    var categoryPickerData: [String] = [String]()
+    var delegate: ModalHandler?
+    var ingredientsToReset = [Ingredient]()
+    var isNewRecipe = false
+    var isPickerVisible = false
     var newRecipeAddDelegate: newRecipeModalHandler?
+    var previousVC = RecipeDetailsVC()
     var recipeToEdit: Recipe?
     var recipeUnchanged: Recipe?
     var selectedIngredients = [Ingredient]()
+    var tempCategory: String?
     var tempRecipeName: String?
     var tempSummaryDescription: String?
     var toolBar = UIToolbar()
-    var isNewRecipe = false
-    var isPickerVisible = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.delegate = self
+//        if let recipeToEdit = recipeToEdit { // populate 'selectedIngredients' var with recipeToEdit ingredients
+//            if let ingredients = recipeToEdit.ingredients {
+//                for i in ingredients {
+//                    selectedIngredients.append(i as! Ingredient)
+//                }
+//            }
+//        }
+        categoryPicker.delegate = self
+        categoryPicker.dataSource = self
+        populateSelectedIngredients()
+        createTapGestureForCategoryPicker()
+        configureUI()
+        fetchCategories()
+    }
+    
+    func populateSelectedIngredients() {
         if let recipeToEdit = recipeToEdit { // populate 'selectedIngredients' var with recipeToEdit ingredients
             if let ingredients = recipeToEdit.ingredients {
                 for i in ingredients {
@@ -44,11 +60,6 @@ class AddEditTableVC: UITableViewController  {
                 }
             }
         }
-        configureUI()
-        fetchCategories()
-        categoryPicker.delegate = self
-        categoryPicker.dataSource = self
-        createTapGestureForCategoryPicker()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -120,6 +131,10 @@ class AddEditTableVC: UITableViewController  {
     }
     
     @objc func onDoneButtonTapped() {
+        if isNewRecipe {
+            tempSummaryDescription = recipeDescriptionTextField.text! // hold changes to text fields
+            tempRecipeName = recipeNameTextField.text!
+        }        
         toolBar.removeFromSuperview()
         categoryPicker.removeFromSuperview()
         isPickerVisible = false
@@ -132,8 +147,7 @@ class AddEditTableVC: UITableViewController  {
         if segue.identifier == "IngredientSegue" {
             if let destination = segue.destination as? IngredientsVC {
                 tempSummaryDescription = recipeDescriptionTextField.text! // hold changes to text fields
-                tempRecipeName = recipeNameTextField.text!
-                
+                tempRecipeName = recipeNameTextField.text!                
                 destination.recipeToEdit = recipeToEdit
                 destination.selectedIngredients = selectedIngredients
             }
@@ -152,6 +166,11 @@ class AddEditTableVC: UITableViewController  {
             recipeDescriptionTextField.text = description
         } else {
             recipeDescriptionTextField.text = recipeToEdit?.summaryDescription
+        }
+        if let category = tempCategory {
+            categoryTextField.text = category
+        } else {
+            categoryTextField.text = recipeToEdit?.categoryType
         }
         
         if selectedIngredients.count > 0 {
@@ -179,6 +198,7 @@ class AddEditTableVC: UITableViewController  {
         
         if isNewRecipe {
             let recipe = Recipe(context: Constants.context)
+            recipe.categoryType = tempCategory
             recipe.summaryDescription = recipeDescriptionTextField.text!
             recipe.name = recipeNameTextField.text
             for i in selectedIngredients {
@@ -275,13 +295,19 @@ extension AddEditTableVC: UIPickerViewDelegate, UIPickerViewDataSource {
     
     // Capture the picker view selection
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-            recipeToEdit!.categoryType = categoryPickerData[row]
+        //        if let recipeToEdit = recipeToEdit {
+        //            recipeToEdit.categoryType = categoryPickerData[row]
+        //        } else {
         
-        do {
-            try Constants.context.save()
-        } catch let err {
-            print(err)
-        }
+        categoryTextField.text = categoryPickerData[row]
+        tempCategory = categoryPickerData[row]
+        //}
+        
+        //        do {
+        //            try Constants.context.save()
+        //        } catch let err {
+        //            print(err)
+        //        }
     }
 
 }

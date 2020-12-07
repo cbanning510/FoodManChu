@@ -11,6 +11,7 @@ import CoreData
 class IngredientsVC: UIViewController, NSFetchedResultsControllerDelegate {
     
     @IBOutlet weak var tableView: UITableView!
+    
     var AddEditVC: AddEditTableVC?
     var ingredients: [Ingredient]?
     var selectedIngredients = [Ingredient]()
@@ -22,14 +23,9 @@ class IngredientsVC: UIViewController, NSFetchedResultsControllerDelegate {
         tableView.delegate = self
         tableView.dataSource = self
         navigationController?.delegate = self
-        attemptIngredientFetch()
-        //print("recipeToEdit received in ImngredientsVC\n \(recipeToEdit!)")
-//        if let recipeToEditIngredients = recipeToEdit?.ingredients {
-//            selectedIngredients = recipeToEditIngredients.allObjects as! [Ingredient]
-//        }
-        
         self.tableView.allowsMultipleSelection = true
         self.tableView.allowsMultipleSelectionDuringEditing = true
+        attemptIngredientFetch()
         setSelectedIngredients()
     }
     
@@ -42,7 +38,6 @@ class IngredientsVC: UIViewController, NSFetchedResultsControllerDelegate {
     }
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
-        print(selectedIngredients)
         let alert = UIAlertController(title: "Add Ingredient", message: "Ingredient name?", preferredStyle: .alert)
         alert.addTextField()
         
@@ -108,10 +103,8 @@ extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
             for (index, element) in selectedIngredients.enumerated() {
                 if element.name == ingredient.name {
                     selectedIngredients.remove(at: index)
-                    //recipeToEdit?.removeFromIngredients(ingredient)
                 }
-            }
-            
+            }            
         }
         tableView.reloadRows(at:[indexPath],with:.none)
     }
@@ -176,20 +169,9 @@ extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension IngredientsVC: UINavigationControllerDelegate {
-    
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        
-        
         if viewController.isKind(of: AddEditTableVC.self) {
-            print("back button?")
-            print("selectedIngredients in IngredientVC going to AddEditTableVC is\n\(selectedIngredients)")
-            //print("viewController from ingredientsVC \(viewController)")
-            //don't add to recipeToEdit until save
-//            for i in selectedIngredients {
-//                recipeToEdit?.addToIngredients(i)
-//            }
             (viewController as? AddEditTableVC)?.selectedIngredients = selectedIngredients
-            //(viewController as? AddEditTableVC)?.recipeToEdit = recipeToEdit
         }
     }
 }
