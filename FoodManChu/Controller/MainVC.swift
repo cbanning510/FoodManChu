@@ -11,28 +11,34 @@ protocol newRecipeModalHandler {
 import UIKit
 import CoreData
 
-class MainVC: UIViewController, ModalHandler, newRecipeModalHandler {
-    func dismissModal() {
-        print("dismiss modal for new recipe from MainVC")
-        attemptFetch()
-    }
-    
-    func modalDismissed(recipe: Recipe) {
-        print("modaldsimissed from MainVC")
-        attemptFetch()
-    }
-    
-    
+class MainVC: UIViewController, ModalHandler, newRecipeModalHandler, UISearchBarDelegate {
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var searchBar: UISearchBar!
+    
+    //var searchController: UISearchController?
     
     var controller: NSFetchedResultsController<Recipe>!
     var recipes = [Recipe]()
-
+    var filteredRecipes: [Recipe]!
+    var selectedSearchByType: String?
+    var categories: [Category]?
+    var categoryPickerData: [String] = [String]()
+    var categoryPicker  = UIPickerView()
+    var isPickerVisible = false
+    var toolBar = UIToolbar()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        filteredRecipes = recipes
+        
         tableView.delegate = self
         tableView.dataSource = self
+        searchBar.delegate = self
+        
+        fetchCategories()
+        categoryPicker.delegate = self
+        categoryPicker.dataSource = self
         
         //generateDummyCategories()
         //generateDummyIngredients()
@@ -41,46 +47,264 @@ class MainVC: UIViewController, ModalHandler, newRecipeModalHandler {
         attemptFetch()
     }
     
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+            searchBar.resignFirstResponder()
+        }
+    
+    func searchBar(_ searchBar: UISearchBar, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        var result = true
+//        if text.count > 0 && range.length == 0 && range.location == 0 {
+//            DispatchQueue.main.async {
+//                searchBar.resignFirstResponder()
+//                searchBar.becomeFirstResponder()
+//            }
+//        }
+        if segmentedControl.selectedSegmentIndex == 4 {
+            if (text.rangeOfCharacter(from: NSCharacterSet.decimalDigits) != nil) {
+                result = true
+            } else {
+                result = false
+            }
+        }
+        return result
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        search()
+    }
+//        filteredRecipes = []
+//
+//        if searchText.isEmpty {
+//            attemptFetch()
+//        } else {
+//                for recipe in recipes {
+//                    switch selectedSearchByType {
+//                        case "Ingredient":
+//                            let ingredients = recipe.ingredients as! Set<Ingredient>
+//                            for i in ingredients {
+//                                if i.name!.lowercased().contains(searchText.lowercased()) {
+//                                    if !filteredRecipes.contains(recipe) {
+//                                        filteredRecipes.append(recipe)
+//                                    }
+//                                }
+//                            }
+//                        case "Name":
+//                            if recipe.name!.lowercased().contains(searchText.lowercased()) {
+//                                if !filteredRecipes.contains(recipe) {
+//                                    filteredRecipes.append(recipe)
+//                                }
+//                            }
+//                        case "Description":
+//                            if recipe.summaryDescription!.lowercased().contains(searchText.lowercased()) {
+//                                if !filteredRecipes.contains(recipe) {
+//                                    filteredRecipes.append(recipe)
+//                                }
+//                            }
+//                        case "Time":
+//                                if Int(recipe.prepTime) <= Int(searchText)! {
+//                                    if !filteredRecipes.contains(recipe) {
+//                                        filteredRecipes.append(recipe)
+//                                    }
+//                                }
+//                        case "Category":
+//                            if recipe.categoryType!.lowercased().contains(searchText.lowercased()) {
+//                                if !filteredRecipes.contains(recipe) {
+//                                    filteredRecipes.append(recipe)
+//                                }
+//                            }
+//
+//                        default:
+//                            print("blehw")
+//                    }
+//                }
+//
+//            }
+//            self.tableView.reloadData()
+//        }
+    
+    func search() {
+        filteredRecipes = []
+        
+        if searchBar.text!.isEmpty {
+            attemptFetch()
+        } else {
+                for recipe in recipes {
+                    switch selectedSearchByType {
+                        case "Ingredient":
+                            let ingredients = recipe.ingredients as! Set<Ingredient>
+                            for i in ingredients {
+                                if i.name!.lowercased().contains(searchBar.text!.lowercased()) {
+                                    if !filteredRecipes.contains(recipe) {
+                                        filteredRecipes.append(recipe)
+                                    }
+                                }
+                            }
+                        case "Name":
+                            if recipe.name!.lowercased().contains(searchBar.text!.lowercased()) {
+                                if !filteredRecipes.contains(recipe) {
+                                    filteredRecipes.append(recipe)
+                                }
+                            }
+                        case "Description":
+                            if recipe.summaryDescription!.lowercased().contains(searchBar.text!.lowercased()) {
+                                if !filteredRecipes.contains(recipe) {
+                                    filteredRecipes.append(recipe)
+                                }
+                            }
+                        case "Time":
+                                if Int(recipe.prepTime) <= Int(searchBar.text!)! {
+                                    if !filteredRecipes.contains(recipe) {
+                                        filteredRecipes.append(recipe)
+                                    }
+                                }
+                        case "Category":
+                            if recipe.categoryType!.lowercased().contains(searchBar.text!.lowercased()) {
+                                if !filteredRecipes.contains(recipe) {
+                                    filteredRecipes.append(recipe)
+                                }
+                            }
+                        
+                        default:
+                            print("blehw")
+                    }
+                }
+                
+            }
+            self.tableView.reloadData()
+        }
+    
+    func populateCategoryPicker() {
+        for category in categories! {
+            categoryPickerData.append(category.name!)
+        }
+    }
+    
+    func fetchCategories() {
+        let request = Category.fetchRequest() as NSFetchRequest<Category>
+        do {
+            self.categories = try Constants.context.fetch(request)
+        } catch let err {
+            print(err)
+        }
+    }
+    
+    func dismissModal() {
+        //print("dismiss modal for new recipe from MainVC")
+        attemptFetch()
+    }
+    
+    func modalDismissed(recipe: Recipe) {
+        //print("modaldsimissed from MainVC")
+        attemptFetch()
+    }
+    
+    @IBAction func myUnwindAction(unwindSegue: UIStoryboardSegue) {
+        //print("unwinded")
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         print("view will apear in MainVC!!!")
         attemptFetch()
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        print("viewDidApear in MainVC")
+        //print("viewDidApear in MainVC")
+    }
+    
+    @IBAction func segmentedControlChanged(_ sender: UISegmentedControl) {
+        self.searchBar.text = nil
+        
+        filteredRecipes = []
+        switch segmentedControl.selectedSegmentIndex {
+        case 0:
+            
+            selectedSearchByType = "All"
+            print("All")
+        case 1:
+            selectedSearchByType = "Ingredient"
+            print("Ingredient")
+        case 2:
+            selectedSearchByType = "Name"
+            print("Name")
+        case 3:
+            selectedSearchByType = "Description"
+            print("Description")
+        case 4:
+            selectedSearchByType = "Time"
+            print("Time")
+        case 5:
+            selectedSearchByType = "Category"
+            if !self.isPickerVisible {
+                populateCategoryPicker()
+                self.isPickerVisible = true
+                searchBar.isUserInteractionEnabled = false
+                //disableTextFields()
+                categoryPicker.isHidden = false
+                categoryPicker.backgroundColor = UIColor.white
+                categoryPicker.setValue(UIColor.black, forKey: "textColor")
+                categoryPicker.autoresizingMask = .flexibleWidth
+                categoryPicker.contentMode = .center
+                categoryPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 300)
+                view.addSubview(categoryPicker)
+                        
+                toolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 50))
+                toolBar.barStyle = .default
+                toolBar.isTranslucent = true
+                toolBar.sizeToFit()
+                toolBar.items = [UIBarButtonItem.init(title: "Done", style: .done, target: self, action: #selector(onDoneButtonTapped))]
+                view.addSubview(toolBar)
+            }
+        default:
+            selectedSearchByType = "All"
+        }
+        attemptFetch()
+       tableView.reloadData()
+    }
+    
+    @objc func onDoneButtonTapped() {
+        toolBar.removeFromSuperview()
+        categoryPicker.removeFromSuperview()
+        isPickerVisible = false
+        search()
+        searchBar.isUserInteractionEnabled = true
     }
     
     func attemptFetch() {
+        print("attemptFetch \(segmentedControl.selectedSegmentIndex)")
         let request = Recipe.fetchRequest() as NSFetchRequest<Recipe>
-        let nameSort = NSSortDescriptor(key: "name", ascending: true)
-        request.sortDescriptors = [nameSort]
         do {
             self.recipes = try Constants.context.fetch(request)
+            if segmentedControl.selectedSegmentIndex == 0 {
+                filteredRecipes = self.recipes
+            }
             tableView.reloadData()
         } catch let err {
             print(err)
         }
+        
+        
     }
 }
 
 extension MainVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return recipes.count
+            return filteredRecipes.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellReuseId, for: indexPath) as? RecipeCell else {
             return UITableViewCell()
         }
-        let recipe = recipes[indexPath.row]
-        cell.configCell(recipe)
+            let recipe = filteredRecipes[indexPath.row]
+            cell.configCell(recipe)
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let recipe = recipes[indexPath.row]
-            performSegue(withIdentifier: "DetailSegue", sender: recipe)
+        performSegue(withIdentifier: "DetailSegue", sender: recipe)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -101,11 +325,7 @@ extension MainVC: UITableViewDelegate, UITableViewDataSource {
             if let destVC = segue.destination as? UINavigationController,
                let targetController = destVC.topViewController as? AddEditTableVC {
                 targetController.newRecipeAddDelegate = self
-                //targetController.recipeToEdit = recipeToEdit
-                //let recipe = Recipe(context: Constants.context)
-                //print("is recipe nil? \(recipe)")
                 targetController.isNewRecipe = true
-                //targetController. recipeToEdit = recipe
             }
         }
     }
@@ -129,38 +349,93 @@ extension MainVC: NSFetchedResultsControllerDelegate {
     }
     
     func generateDummyRecipes() {
+        // -- recipe 1 --
         let recipe1 = Recipe(context: Constants.context)
-        recipe1.id = 0
-        recipe1.categoryType = "Vegetarian"
+        // recipe1.id = 0
+        recipe1.categoryType = "Meat"
         recipe1.name = "Chicken Parmesan"
-        recipe1.prepTime = 60
-        recipe1.summaryDescription = "My favorite Italian entree"
+        recipe1.prepTime = 65
+        recipe1.summaryDescription = "Traditional Italian-American favorite"
+        
+        let ingredient55 = Ingredient(context: Constants.context)
+        ingredient55.name = "Canned Tomatoes"
+        let ingredient56 = Ingredient(context: Constants.context)
+        ingredient56.name = "Panko Bread Crumbs"
+        
+        recipe1.addToIngredients(ingredient55)
+        recipe1.addToIngredients(ingredient56)
+        
+        let instruction7 = Instruction(context: Constants.context)
+        instruction7.summary = "Pound chicken breasts to 1/4 inch thickness"
+        let instruction8 = Instruction(context: Constants.context)
+        instruction8.summary = "Heat oil in large frying pan to 350 degrees"
+        
+        recipe1.addToInstructions(instruction7)
+        recipe1.addToInstructions(instruction8)
+        
+        // -- recipe 2 --
         
         let recipe2 = Recipe(context: Constants.context)
-        recipe2.id = 1
-        recipe2.categoryType = "Vegan"
-        recipe2.name = "Vegan Alfredo"
-        recipe2.prepTime = 45
-        recipe2.summaryDescription = "Tossed in a delicious cashew hemp wtf cream"
+        // recipe2.id = 1
+        recipe2.categoryType = "Keto"
+        recipe2.name = "Cauliflour Alfredo"
+        recipe2.prepTime = 44
+        recipe2.summaryDescription = "Cauliflour cooked in heavy cream and parmesan cheese"
+        
+        let ingredient53 = Ingredient(context: Constants.context)
+        ingredient53.name = "cauliflour"
+        let ingredient54 = Ingredient(context: Constants.context)
+        ingredient54.name = "cream"
+        
+        recipe2.addToIngredients(ingredient53)
+        recipe2.addToIngredients(ingredient54)
+        
+        let instruction5 = Instruction(context: Constants.context)
+        instruction5.summary = "Chop cauliflour unto bite-sized pieces"
+        let instruction6 = Instruction(context: Constants.context)
+        instruction6.summary = "Melt 2 Tbsp butter in medium saucepan"
+        
+        recipe2.addToInstructions(instruction5)
+        recipe2.addToInstructions(instruction6)
+        
+        // -- recipe 3 --
         
         let recipe3 = Recipe(context: Constants.context)
-        recipe3.id = 2
+        // recipe3.id = 2
         recipe3.categoryType = "Paleo"
         recipe3.name = "Mixed Nuts"
         recipe3.prepTime = 2
         recipe3.summaryDescription = "A bowl of mixed nuts straight from the can"
         
+        let ingredient51 = Ingredient(context: Constants.context)
+        ingredient51.name = "peanuts"
+        let ingredient52 = Ingredient(context: Constants.context)
+        ingredient52.name = "cashews"
+        
+        recipe3.addToIngredients(ingredient51)
+        recipe3.addToIngredients(ingredient52)
+        
+        let instruction3 = Instruction(context: Constants.context)
+        instruction3.summary = "Open can of mixed nuts"
+        let instruction4 = Instruction(context: Constants.context)
+        instruction4.summary = "Pour nuts into a bowl"
+        
+        recipe3.addToInstructions(instruction3)
+        recipe3.addToInstructions(instruction4)
+        
+        // -- recipe 4 --
+        
         let recipe4 = Recipe(context: Constants.context)
-        recipe4.id = 3
-        recipe4.categoryType = "Ke to"
+        // recipe4.id = 3
+        recipe4.categoryType = "Vegetarian"
         recipe4.name = "Blueberry Muffins"
-        recipe4.prepTime = 44
-        recipe4.summaryDescription = "Superb decadence that only a crate of blueberries could provide"
+        recipe4.prepTime = 27
+        recipe4.summaryDescription = "Sweet corn muffins with tangy blueberries"
         
         let ingredient1 = Ingredient(context: Constants.context)
-        ingredient1.name = "milk"
+        ingredient1.name = "blueberries"
         let ingredient2 = Ingredient(context: Constants.context)
-        ingredient2.name = "cream"
+        ingredient2.name = "flour"
         
         recipe4.addToIngredients(ingredient1)
         recipe4.addToIngredients(ingredient2)
@@ -172,6 +447,31 @@ extension MainVC: NSFetchedResultsControllerDelegate {
         
         recipe4.addToInstructions(instruction1)
         recipe4.addToInstructions(instruction2)
+        
+        // -- recipe 5 --
+        
+        let recipe5 = Recipe(context: Constants.context)
+        // recipe4.id = 3
+        recipe5.categoryType = "Vegan"
+        recipe5.name = "Tossed salad"
+        recipe5.prepTime = 14
+        recipe5.summaryDescription = "Vegan delight consisting of mixed greens"
+        
+        let ingredient57 = Ingredient(context: Constants.context)
+        ingredient57.name = "iceberg lettuce"
+        let ingredient58 = Ingredient(context: Constants.context)
+        ingredient58.name = "red cabbage"
+        
+        recipe5.addToIngredients(ingredient57)
+        recipe5.addToIngredients(ingredient58)
+        
+        let instruction9 = Instruction(context: Constants.context)
+        instruction9.summary = "Wash, clean, and dry lettuce and cabbage"
+        let instruction10 = Instruction(context: Constants.context)
+        instruction10.summary = "Grate red cabbage with cheese grater"
+        
+        recipe5.addToInstructions(instruction1)
+        recipe5.addToInstructions(instruction2)
         
         Constants.ad.saveContext()
     }
@@ -208,7 +508,7 @@ extension MainVC: NSFetchedResultsControllerDelegate {
         let ingredient17 = Ingredient(context: Constants.context)
         ingredient17.name = "mozzarella cheese"
         let ingredient18 = Ingredient(context: Constants.context)
-        ingredient18.name = "flour"
+        ingredient18.name = "milk"
         let ingredient19 = Ingredient(context: Constants.context)
         ingredient19.name = "sugar"
         let ingredient20 = Ingredient(context: Constants.context)
@@ -242,7 +542,7 @@ extension MainVC: NSFetchedResultsControllerDelegate {
         let ingredient34 = Ingredient(context: Constants.context)
         ingredient34.name = "broccoli"
         let ingredient35 = Ingredient(context: Constants.context)
-        ingredient35.name = "cauliflour"
+        ingredient35.name = "turnips"
         let ingredient36 = Ingredient(context: Constants.context)
         ingredient36.name = "asparagus"
         let ingredient37 = Ingredient(context: Constants.context)
@@ -277,5 +577,30 @@ extension MainVC: NSFetchedResultsControllerDelegate {
         Constants.ad.saveContext()
     }
     
+}
+
+extension MainVC: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return categoryPickerData.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return categoryPickerData[row]
+    }
+    
+    func save() {
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+    }
+    
+    // Capture the picker view selection
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        searchBar.text = categoryPickerData[row]
+        tableView.reloadData()
+    }
+
 }
 

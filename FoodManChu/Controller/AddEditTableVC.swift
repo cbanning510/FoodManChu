@@ -17,7 +17,6 @@ class AddEditTableVC: UITableViewController  {
     @IBOutlet weak var categoryTextField: UITextField!
     @IBOutlet weak var addIngredientsLabel: UILabel!
     @IBOutlet weak var addInstructionsLabel: UILabel!
-    //@IBOutlet weak var categoryPicker: UIPickerView!
     
     var ingredientsToReset = [Ingredient]()
     var previousVC = RecipeDetailsVC()
@@ -166,7 +165,17 @@ class AddEditTableVC: UITableViewController  {
         }
     }
     
+    func showAlert() {
+        let alert = UIAlertController(title: "Error", message: "Please fill out required fields", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     @IBAction func saveButtonPressed(_ sender: UIBarButtonItem) {
+        if recipeNameTextField.text!.count < 2 || addIngredientsLabel.text == "Add Ingredients (Required)" {
+            showAlert()
+            return
+        }
         
         if isNewRecipe {
             let recipe = Recipe(context: Constants.context)
@@ -183,8 +192,7 @@ class AddEditTableVC: UITableViewController  {
             catch {
                 print(error)
             }
-            self.dismiss(animated: true, completion: nil)
-            
+            self.performSegue(withIdentifier: "HomePageSegue", sender: nil)
         } else  {
             
             recipeToEdit?.summaryDescription = recipeDescriptionTextField.text!
@@ -201,7 +209,7 @@ class AddEditTableVC: UITableViewController  {
             catch {
                 print(error)
             }
-            self.dismiss(animated: true, completion: nil)
+            self.performSegue(withIdentifier: "HomePageSegue", sender: nil)
         }       
     }
     
@@ -222,7 +230,7 @@ class AddEditTableVC: UITableViewController  {
         
         do {
             ingredientsToReset = try Constants.context.fetch(fetchRequest)
-            //reset here
+            
             for i in ingredientsToReset {
                 i.isCellSelected = false
             }

@@ -125,6 +125,9 @@
                                     <segment title="Time"/>
                                     <segment title="Category"/>
                                 </segments>
+                                <connections>
+                                    <action selector="segmentedControlChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="w2B-i1-veZ"/>
+                                </connections>
                             </segmentedControl>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -153,6 +156,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="searchBar" destination="Xaq-B7-xCy" id="j1Y-JS-1la"/>
                         <outlet property="segmentedControl" destination="g9b-8v-4rY" id="iUY-ZW-lGZ"/>
                         <outlet property="tableView" destination="epv-6q-DZT" id="sgs-wS-Ehl"/>
                         <segue destination="Nxy-WU-gIT" kind="show" identifier="DetailSegue" id="xpT-3v-xcv"/>
@@ -160,7 +164,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3904.347826086957" y="-62.276785714285708"/>
+            <point key="canvasLocation" x="4054" y="-2"/>
         </scene>
         <!--Recipe DetailsVC-->
         <scene sceneID="S7K-UK-7ux">
@@ -519,9 +523,11 @@
                         <outlet property="recipeDescriptionTextField" destination="bhj-rb-L90" id="zyb-l0-rLj"/>
                         <outlet property="recipeNameTextField" destination="AFh-i1-ewK" id="ofD-dD-vcr"/>
                         <outlet property="tableView" destination="L8d-Ub-DTy" id="qAp-jB-XhY"/>
+                        <segue destination="Bz0-eG-etw" kind="unwind" identifier="HomePageSegue" unwindAction="myUnwindActionWithUnwindSegue:" id="ado-we-U5m"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hVS-w4-Vbv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="Bz0-eG-etw" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="6320.8000000000002" y="-125.03748125937032"/>
         </scene>
@@ -631,7 +637,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="sBo-lf-HgR"/>
+        <segue reference="Rcb-gL-sN7"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="chicken-parmesan-recipe-1" width="360" height="360"/>
