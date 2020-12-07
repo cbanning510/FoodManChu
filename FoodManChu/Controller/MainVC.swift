@@ -16,8 +16,6 @@ class MainVC: UIViewController, ModalHandler, newRecipeModalHandler, UISearchBar
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
     
-    //var searchController: UISearchController?
-    
     var controller: NSFetchedResultsController<Recipe>!
     var recipes = [Recipe]()
     var filteredRecipes: [Recipe]!
@@ -53,12 +51,6 @@ class MainVC: UIViewController, ModalHandler, newRecipeModalHandler, UISearchBar
     
     func searchBar(_ searchBar: UISearchBar, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         var result = true
-//        if text.count > 0 && range.length == 0 && range.location == 0 {
-//            DispatchQueue.main.async {
-//                searchBar.resignFirstResponder()
-//                searchBar.becomeFirstResponder()
-//            }
-//        }
         if segmentedControl.selectedSegmentIndex == 4 {
             if (text.rangeOfCharacter(from: NSCharacterSet.decimalDigits) != nil) {
                 result = true
@@ -72,55 +64,6 @@ class MainVC: UIViewController, ModalHandler, newRecipeModalHandler, UISearchBar
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         search()
     }
-//        filteredRecipes = []
-//
-//        if searchText.isEmpty {
-//            attemptFetch()
-//        } else {
-//                for recipe in recipes {
-//                    switch selectedSearchByType {
-//                        case "Ingredient":
-//                            let ingredients = recipe.ingredients as! Set<Ingredient>
-//                            for i in ingredients {
-//                                if i.name!.lowercased().contains(searchText.lowercased()) {
-//                                    if !filteredRecipes.contains(recipe) {
-//                                        filteredRecipes.append(recipe)
-//                                    }
-//                                }
-//                            }
-//                        case "Name":
-//                            if recipe.name!.lowercased().contains(searchText.lowercased()) {
-//                                if !filteredRecipes.contains(recipe) {
-//                                    filteredRecipes.append(recipe)
-//                                }
-//                            }
-//                        case "Description":
-//                            if recipe.summaryDescription!.lowercased().contains(searchText.lowercased()) {
-//                                if !filteredRecipes.contains(recipe) {
-//                                    filteredRecipes.append(recipe)
-//                                }
-//                            }
-//                        case "Time":
-//                                if Int(recipe.prepTime) <= Int(searchText)! {
-//                                    if !filteredRecipes.contains(recipe) {
-//                                        filteredRecipes.append(recipe)
-//                                    }
-//                                }
-//                        case "Category":
-//                            if recipe.categoryType!.lowercased().contains(searchText.lowercased()) {
-//                                if !filteredRecipes.contains(recipe) {
-//                                    filteredRecipes.append(recipe)
-//                                }
-//                            }
-//
-//                        default:
-//                            print("blehw")
-//                    }
-//                }
-//
-//            }
-//            self.tableView.reloadData()
-//        }
     
     func search() {
         filteredRecipes = []
@@ -188,36 +131,28 @@ class MainVC: UIViewController, ModalHandler, newRecipeModalHandler, UISearchBar
         }
     }
     
-    func dismissModal() {
-        //print("dismiss modal for new recipe from MainVC")
+    func dismissModal() { // protocol method for data passing between VC's
         attemptFetch()
     }
     
-    func modalDismissed(recipe: Recipe) {
-        //print("modaldsimissed from MainVC")
+    func modalDismissed(recipe: Recipe) { // protocol method for data passing between VC's
         attemptFetch()
     }
     
     @IBAction func myUnwindAction(unwindSegue: UIStoryboardSegue) {
-        //print("unwinded")
+        // home base
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        print("view will apear in MainVC!!!")
         attemptFetch()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        //print("viewDidApear in MainVC")
     }
     
     @IBAction func segmentedControlChanged(_ sender: UISegmentedControl) {
         self.searchBar.text = nil
-        
         filteredRecipes = []
+        
         switch segmentedControl.selectedSegmentIndex {
         case 0:
-            
             selectedSearchByType = "All"
             print("All")
         case 1:
@@ -270,7 +205,6 @@ class MainVC: UIViewController, ModalHandler, newRecipeModalHandler, UISearchBar
     }
     
     func attemptFetch() {
-        print("attemptFetch \(segmentedControl.selectedSegmentIndex)")
         let request = Recipe.fetchRequest() as NSFetchRequest<Recipe>
         do {
             self.recipes = try Constants.context.fetch(request)
@@ -281,8 +215,6 @@ class MainVC: UIViewController, ModalHandler, newRecipeModalHandler, UISearchBar
         } catch let err {
             print(err)
         }
-        
-        
     }
 }
 
@@ -351,7 +283,6 @@ extension MainVC: NSFetchedResultsControllerDelegate {
     func generateDummyRecipes() {
         // -- recipe 1 --
         let recipe1 = Recipe(context: Constants.context)
-        // recipe1.id = 0
         recipe1.categoryType = "Meat"
         recipe1.name = "Chicken Parmesan"
         recipe1.prepTime = 65
@@ -376,7 +307,6 @@ extension MainVC: NSFetchedResultsControllerDelegate {
         // -- recipe 2 --
         
         let recipe2 = Recipe(context: Constants.context)
-        // recipe2.id = 1
         recipe2.categoryType = "Keto"
         recipe2.name = "Cauliflour Alfredo"
         recipe2.prepTime = 44
@@ -401,7 +331,6 @@ extension MainVC: NSFetchedResultsControllerDelegate {
         // -- recipe 3 --
         
         let recipe3 = Recipe(context: Constants.context)
-        // recipe3.id = 2
         recipe3.categoryType = "Paleo"
         recipe3.name = "Mixed Nuts"
         recipe3.prepTime = 2
@@ -426,7 +355,6 @@ extension MainVC: NSFetchedResultsControllerDelegate {
         // -- recipe 4 --
         
         let recipe4 = Recipe(context: Constants.context)
-        // recipe4.id = 3
         recipe4.categoryType = "Vegetarian"
         recipe4.name = "Blueberry Muffins"
         recipe4.prepTime = 27
@@ -451,7 +379,6 @@ extension MainVC: NSFetchedResultsControllerDelegate {
         // -- recipe 5 --
         
         let recipe5 = Recipe(context: Constants.context)
-        // recipe4.id = 3
         recipe5.categoryType = "Vegan"
         recipe5.name = "Tossed salad"
         recipe5.prepTime = 14

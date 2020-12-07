@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		83081B4825761A1200DA2392 /* RecipeDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83081B4725761A1200DA2392 /* RecipeDetailsVC.swift */; };
+		831F67DA257E0EBE0030BBEE /* FoodManChu.sqlite-shm in Resources */ = {isa = PBXBuildFile; fileRef = 831F67D7257E0EBE0030BBEE /* FoodManChu.sqlite-shm */; };
+		831F67DB257E0EBE0030BBEE /* FoodManChu.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 831F67D8257E0EBE0030BBEE /* FoodManChu.sqlite */; };
+		831F67DC257E0EBE0030BBEE /* FoodManChu.sqlite-wal in Resources */ = {isa = PBXBuildFile; fileRef = 831F67D9257E0EBE0030BBEE /* FoodManChu.sqlite-wal */; };
 		832BFA6E257881DA008F9F06 /* Recipe+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832BFA66257881DA008F9F06 /* Recipe+CoreDataClass.swift */; };
 		832BFA6F257881DA008F9F06 /* Recipe+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832BFA67257881DA008F9F06 /* Recipe+CoreDataProperties.swift */; };
 		832BFA70257881DA008F9F06 /* Instruction+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832BFA68257881DA008F9F06 /* Instruction+CoreDataClass.swift */; };
@@ -33,6 +36,9 @@
 
 /* Begin PBXFileReference section */
 		83081B4725761A1200DA2392 /* RecipeDetailsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeDetailsVC.swift; sourceTree = "<group>"; };
+		831F67D7257E0EBE0030BBEE /* FoodManChu.sqlite-shm */ = {isa = PBXFileReference; lastKnownFileType = file; path = "FoodManChu.sqlite-shm"; sourceTree = "<group>"; };
+		831F67D8257E0EBE0030BBEE /* FoodManChu.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = FoodManChu.sqlite; sourceTree = "<group>"; };
+		831F67D9257E0EBE0030BBEE /* FoodManChu.sqlite-wal */ = {isa = PBXFileReference; lastKnownFileType = file; path = "FoodManChu.sqlite-wal"; sourceTree = "<group>"; };
 		832BFA66257881DA008F9F06 /* Recipe+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Recipe+CoreDataClass.swift"; sourceTree = "<group>"; };
 		832BFA67257881DA008F9F06 /* Recipe+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Recipe+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		832BFA68257881DA008F9F06 /* Instruction+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Instruction+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -96,6 +102,9 @@
 		83485352256C3349004D19F2 /* FoodManChu */ = {
 			isa = PBXGroup;
 			children = (
+				831F67D8257E0EBE0030BBEE /* FoodManChu.sqlite */,
+				831F67D7257E0EBE0030BBEE /* FoodManChu.sqlite-shm */,
+				831F67D9257E0EBE0030BBEE /* FoodManChu.sqlite-wal */,
 				83604706256CCE37000B771F /* Utilities */,
 				83485353256C3349004D19F2 /* AppDelegate.swift */,
 				8348536D256C4E40004D19F2 /* Controller */,
@@ -206,6 +215,9 @@
 			files = (
 				83485363256C3349004D19F2 /* LaunchScreen.storyboard in Resources */,
 				83485360256C3349004D19F2 /* Assets.xcassets in Resources */,
+				831F67DC257E0EBE0030BBEE /* FoodManChu.sqlite-wal in Resources */,
+				831F67DA257E0EBE0030BBEE /* FoodManChu.sqlite-shm in Resources */,
+				831F67DB257E0EBE0030BBEE /* FoodManChu.sqlite in Resources */,
 				8348535B256C3349004D19F2 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

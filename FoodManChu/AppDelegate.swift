@@ -15,6 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            print(urls[0])
         return true
     }
 
@@ -35,13 +37,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Core Data stack
 
     lazy var persistentContainer: NSPersistentContainer = {
-        /*
-         The persistent container for the application. This implementation
-         creates and returns a container, having loaded the store for the
-         application to it. This property is optional since there are legitimate
-         error conditions that could cause the creation of the store to fail.
-        */
+        let directoryUrls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        let applicationDocumentDirectory = directoryUrls[0]
+        let storeUrl = applicationDocumentDirectory.appendingPathComponent("FoodManChu.sqlite")
+        if !FileManager.default.fileExists(atPath: storeUrl.path) {
+            let sourceSqliteURLs = [Bundle.main.url(forResource: "FoodManChu", withExtension: "sqlite")!, Bundle.main.url(forResource: "FoodManChu", withExtension: "sqlite-wal")!, Bundle.main.url(forResource: "FoodManChu", withExtension: "sqlite-shm")!]
+            let destSqliteURLs = [applicationDocumentDirectory.appendingPathComponent("FoodManChu.sqlite"), applicationDocumentDirectory.appendingPathComponent("FoodManChu.sqlite-wal"), applicationDocumentDirectory.appendingPathComponent("FoodManChu.sqlite-shm")]
+            
+            for index in 0..<sourceSqliteURLs.count {
+                do {
+                    try FileManager.default.copyItem(at: sourceSqliteURLs[index], to: destSqliteURLs[index])
+                } catch {
+                    print(error)
+                }
+            }
+        }
+        
+        let description = NSPersistentStoreDescription()
+            description.url = storeUrl
+        
+        
+        
         let container = NSPersistentContainer(name: "FoodManChu")
+        container.persistentStoreDescriptions = [description]
+        
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.
