@@ -89,11 +89,14 @@ class MainVC: UIViewController,  UISearchBarDelegate {
                         filteredRecipes.append(recipe)
                     }
                 case "Category":
-                    if recipe.categoryType!.lowercased().contains(searchBar.text!.lowercased()) {
-                        filteredRecipes.append(recipe)
+                    if let categoryType = recipe.categoryType {
+                        if categoryType.lowercased().contains(searchBar.text!.lowercased()) {
+                            filteredRecipes.append(recipe)
+                        }
                     }
+                    
                 default:
-                    print("none")
+                    filteredRecipes = recipes
                 }
             }
         }

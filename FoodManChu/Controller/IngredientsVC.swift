@@ -78,19 +78,19 @@ extension IngredientsVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "IngredientCell", for: indexPath) as? IngredientCell else {
-                return UITableViewCell()
-            }
-            let ingredient = ingredients![indexPath.row]
-            cell.configCell(ingredient)
-            
-            if selectedIngredients.contains(ingredient) {
-                cell.accessoryType = .checkmark
-            } else {
-                cell.accessoryType = .none
-            }
-            return cell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "IngredientCell", for: indexPath) as? IngredientCell else {
+            return UITableViewCell()
         }
+        let ingredient = ingredients![indexPath.row]
+        cell.configCell(ingredient)
+        
+        if selectedIngredients.contains(ingredient) {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
+        }
+        return cell
+    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         setSelectedIngredients()

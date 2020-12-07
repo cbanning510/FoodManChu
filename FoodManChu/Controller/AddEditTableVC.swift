@@ -16,6 +16,7 @@ class AddEditTableVC: UITableViewController  {
     @IBOutlet weak var addIngredientsLabel: UILabel!
     @IBOutlet weak var addInstructionsLabel: UILabel!
     @IBOutlet weak var addIngredientsCell: UITableViewCell!
+    @IBOutlet weak var prepTimeTextField: UITextField!
     
     var categories: [Category]?
     var categoryPicker  = UIPickerView()
@@ -30,6 +31,7 @@ class AddEditTableVC: UITableViewController  {
     var recipeUnchanged: Recipe?
     var selectedIngredients = [Ingredient]()
     var tempCategory: String?
+    var tempPrepTime: String?
     var tempRecipeName: String?
     var tempSummaryDescription: String?
     var toolBar = UIToolbar()
@@ -37,13 +39,6 @@ class AddEditTableVC: UITableViewController  {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.delegate = self
-//        if let recipeToEdit = recipeToEdit { // populate 'selectedIngredients' var with recipeToEdit ingredients
-//            if let ingredients = recipeToEdit.ingredients {
-//                for i in ingredients {
-//                    selectedIngredients.append(i as! Ingredient)
-//                }
-//            }
-//        }
         categoryPicker.delegate = self
         categoryPicker.dataSource = self
         populateSelectedIngredients()
@@ -90,15 +85,16 @@ class AddEditTableVC: UITableViewController  {
     }
     
     func enableTextFields() {
+        prepTimeTextField.isUserInteractionEnabled = true
         recipeNameTextField.isUserInteractionEnabled = true
         recipeDescriptionTextField.isUserInteractionEnabled = true
         addIngredientsCell.isUserInteractionEnabled = true
     }
     func disableTextFields() {
+        prepTimeTextField.isUserInteractionEnabled = false
         recipeNameTextField.isUserInteractionEnabled = false
         recipeDescriptionTextField.isUserInteractionEnabled = false
         addIngredientsCell.isUserInteractionEnabled = false
-
     }
     
     func createTapGestureForCategoryPicker() {
@@ -108,10 +104,13 @@ class AddEditTableVC: UITableViewController  {
     }
     
     @objc func tap(gestureReconizer: UITapGestureRecognizer) {
-        print("")
         if !self.isPickerVisible {
             populateCategoryPicker()
             self.isPickerVisible = true
+            // save data to temp vars before disabling
+            tempSummaryDescription = recipeDescriptionTextField.text! // hold changes to text fields
+            tempRecipeName = recipeNameTextField.text!
+            tempPrepTime = prepTimeTextField.text
             disableTextFields()
             categoryPicker.isHidden = false
             categoryPicker.backgroundColor = UIColor.white
@@ -134,7 +133,8 @@ class AddEditTableVC: UITableViewController  {
         if isNewRecipe {
             tempSummaryDescription = recipeDescriptionTextField.text! // hold changes to text fields
             tempRecipeName = recipeNameTextField.text!
-        }        
+            tempPrepTime = prepTimeTextField.text
+        }
         toolBar.removeFromSuperview()
         categoryPicker.removeFromSuperview()
         isPickerVisible = false
@@ -143,34 +143,42 @@ class AddEditTableVC: UITableViewController  {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
         if segue.identifier == "IngredientSegue" {
             if let destination = segue.destination as? IngredientsVC {
                 tempSummaryDescription = recipeDescriptionTextField.text! // hold changes to text fields
-                tempRecipeName = recipeNameTextField.text!                
+                tempRecipeName = recipeNameTextField.text!
+                tempPrepTime = prepTimeTextField.text
                 destination.recipeToEdit = recipeToEdit
                 destination.selectedIngredients = selectedIngredients
             }
         }
-        
     }
     
     func configureUI() {
-        categoryTextField.text = recipeToEdit?.categoryType
         if let name = tempRecipeName {
             recipeNameTextField.text = name
         } else {
             recipeNameTextField.text = recipeToEdit?.name
         }
+        
         if let description = tempSummaryDescription {
             recipeDescriptionTextField.text = description
         } else {
             recipeDescriptionTextField.text = recipeToEdit?.summaryDescription
         }
+        
         if let category = tempCategory {
             categoryTextField.text = category
         } else {
             categoryTextField.text = recipeToEdit?.categoryType
+        }
+        
+        if let prepTime = tempPrepTime {
+            prepTimeTextField.text = prepTime
+        } else {
+            if let prepTime = recipeToEdit?.prepTime {
+                prepTimeTextField.text = String(prepTime)
+            }
         }
         
         if selectedIngredients.count > 0 {
@@ -201,6 +209,7 @@ class AddEditTableVC: UITableViewController  {
             recipe.categoryType = tempCategory
             recipe.summaryDescription = recipeDescriptionTextField.text!
             recipe.name = recipeNameTextField.text
+            recipe.prepTime = Int64(prepTimeTextField.text!)!
             for i in selectedIngredients {
                 recipe.addToIngredients(i)
             }
@@ -217,6 +226,8 @@ class AddEditTableVC: UITableViewController  {
             
             recipeToEdit?.summaryDescription = recipeDescriptionTextField.text!
             recipeToEdit?.name = recipeNameTextField.text!
+            recipeToEdit?.categoryType = tempCategory
+            recipeToEdit?.prepTime = Int64(prepTimeTextField.text!)!
             // clear out recipeToEdit ingredients
             recipeToEdit?.ingredients = nil
             
@@ -269,7 +280,6 @@ class AddEditTableVC: UITableViewController  {
 
 extension AddEditTableVC: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        
         if viewController.isKind(of: RecipeDetailsVC.self) {
             (viewController as? RecipeDetailsVC)?.recipeToEdit = recipeToEdit
         }
@@ -293,23 +303,10 @@ extension AddEditTableVC: UIPickerViewDelegate, UIPickerViewDataSource {
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
     }
     
-    // Capture the picker view selection
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        //        if let recipeToEdit = recipeToEdit {
-        //            recipeToEdit.categoryType = categoryPickerData[row]
-        //        } else {
-        
         categoryTextField.text = categoryPickerData[row]
         tempCategory = categoryPickerData[row]
-        //}
-        
-        //        do {
-        //            try Constants.context.save()
-        //        } catch let err {
-        //            print(err)
-        //        }
     }
-
 }
 
 

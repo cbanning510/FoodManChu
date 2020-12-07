@@ -18,11 +18,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="Xaq-B7-xCy">
-                                <rect key="frame" x="0.0" y="76" width="375" height="56"/>
+                                <rect key="frame" x="0.0" y="44" width="375" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="epv-6q-DZT">
-                                <rect key="frame" x="0.0" y="207" width="375" height="499"/>
+                                <rect key="frame" x="0.0" y="168" width="375" height="499"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="RecipeCell" rowHeight="150" id="m6i-Of-FHo" customClass="RecipeCell" customModule="FoodManChu" customModuleProvider="target">
@@ -110,13 +110,13 @@
                                 </prototypes>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Search filter:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u2C-dU-Mnf">
-                                <rect key="frame" x="13" y="141" width="88" height="18"/>
+                                <rect key="frame" x="13" y="102" width="88" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" apportionsSegmentWidthsByContent="YES" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="g9b-8v-4rY">
-                                <rect key="frame" x="0.0" y="170" width="375" height="32"/>
+                                <rect key="frame" x="0.0" y="131" width="375" height="32"/>
                                 <segments>
                                     <segment title="All"/>
                                     <segment title="Ingredient"/>
@@ -134,16 +134,16 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="u2C-dU-Mnf" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="13" id="AGC-4T-4ye"/>
-                            <constraint firstItem="Xaq-B7-xCy" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="32" id="FtJ-m8-uOp"/>
+                            <constraint firstItem="Xaq-B7-xCy" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="FtJ-m8-uOp"/>
                             <constraint firstItem="Xaq-B7-xCy" firstAttribute="leading" secondItem="g9b-8v-4rY" secondAttribute="leading" id="JP1-u2-HU2"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="u2C-dU-Mnf" secondAttribute="trailing" symbolic="YES" id="QRG-um-aJb"/>
                             <constraint firstItem="g9b-8v-4rY" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailing" id="VLc-9L-toY"/>
                             <constraint firstItem="Xaq-B7-xCy" firstAttribute="trailing" secondItem="g9b-8v-4rY" secondAttribute="trailing" id="YSJ-Gv-rem"/>
                             <constraint firstAttribute="trailing" secondItem="epv-6q-DZT" secondAttribute="trailing" id="bpt-eS-b0C"/>
                             <constraint firstItem="epv-6q-DZT" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="fsU-RM-na7"/>
-                            <constraint firstAttribute="bottom" secondItem="epv-6q-DZT" secondAttribute="bottom" constant="-39" id="hGY-lq-Oc3"/>
+                            <constraint firstAttribute="bottom" secondItem="epv-6q-DZT" secondAttribute="bottom" id="hGY-lq-Oc3"/>
                             <constraint firstItem="epv-6q-DZT" firstAttribute="top" secondItem="g9b-8v-4rY" secondAttribute="bottom" constant="6" id="pcE-pc-paK"/>
-                            <constraint firstItem="u2C-dU-Mnf" firstAttribute="top" secondItem="Xaq-B7-xCy" secondAttribute="bottom" constant="9" id="qEe-wn-oN1"/>
+                            <constraint firstItem="u2C-dU-Mnf" firstAttribute="top" secondItem="Xaq-B7-xCy" secondAttribute="bottom" constant="2" id="qEe-wn-oN1"/>
                             <constraint firstItem="g9b-8v-4rY" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="rJe-Ew-C80"/>
                             <constraint firstItem="g9b-8v-4rY" firstAttribute="top" secondItem="u2C-dU-Mnf" secondAttribute="bottom" constant="11" id="rpM-nn-cce"/>
                         </constraints>
@@ -480,17 +480,48 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="  Category" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dnd-qQ-WHk">
-                                                    <rect key="frame" x="16" y="0.0" width="95" height="34"/>
+                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="  Category" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dnd-qQ-WHk">
+                                                    <rect key="frame" x="16" y="0.0" width="359" height="44"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="44" id="l1D-TC-MYp"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailingMargin" secondItem="dnd-qQ-WHk" secondAttribute="trailing" id="6IK-Jt-dY1"/>
-                                                <constraint firstItem="dnd-qQ-WHk" firstAttribute="top" secondItem="H6V-ct-RKe" secondAttribute="topMargin" id="Mr9-5p-Gx5"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="dnd-qQ-WHk" secondAttribute="bottom" id="c7q-T2-m0s"/>
-                                                <constraint firstItem="dnd-qQ-WHk" firstAttribute="leading" secondItem="H6V-ct-RKe" secondAttribute="leadingMargin" id="ezR-hj-gfF"/>
+                                                <constraint firstItem="dnd-qQ-WHk" firstAttribute="top" secondItem="H6V-ct-RKe" secondAttribute="top" id="DRT-Pc-ZeH"/>
+                                                <constraint firstAttribute="bottom" secondItem="dnd-qQ-WHk" secondAttribute="bottom" id="Hsb-HP-x3i"/>
+                                                <constraint firstItem="dnd-qQ-WHk" firstAttribute="leading" secondItem="H6V-ct-RKe" secondAttribute="leading" constant="16" id="Iq0-lt-65j"/>
+                                                <constraint firstAttribute="trailing" secondItem="dnd-qQ-WHk" secondAttribute="trailing" id="Lk0-n6-UIR"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="PREP TIME" id="Ya5-he-hUy">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="Stw-j9-bTt">
+                                        <rect key="frame" x="0.0" y="836.5" width="375" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Stw-j9-bTt" id="Aoy-DI-TCS">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="  Minutes" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="CfH-Kn-sgV">
+                                                    <rect key="frame" x="16" y="0.0" width="359" height="44"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="44" id="j13-zK-RUl"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                                                </textField>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="CfH-Kn-sgV" secondAttribute="trailing" id="8tf-aH-5FD"/>
+                                                <constraint firstItem="CfH-Kn-sgV" firstAttribute="leading" secondItem="Aoy-DI-TCS" secondAttribute="leading" constant="16" id="emS-yy-rz0"/>
+                                                <constraint firstAttribute="bottom" secondItem="CfH-Kn-sgV" secondAttribute="bottom" id="rAQ-XR-WoD"/>
+                                                <constraint firstItem="CfH-Kn-sgV" firstAttribute="top" secondItem="Aoy-DI-TCS" secondAttribute="top" id="zBm-JQ-NN1"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -520,6 +551,7 @@
                         <outlet property="addIngredientsLabel" destination="v0x-4z-wYO" id="xsl-ya-QXr"/>
                         <outlet property="addInstructionsLabel" destination="PTN-Ji-Nlp" id="4g3-lP-kfi"/>
                         <outlet property="categoryTextField" destination="dnd-qQ-WHk" id="lrx-GZ-AOp"/>
+                        <outlet property="prepTimeTextField" destination="CfH-Kn-sgV" id="PSj-ZV-ouJ"/>
                         <outlet property="recipeDescriptionTextField" destination="bhj-rb-L90" id="zyb-l0-rLj"/>
                         <outlet property="recipeNameTextField" destination="AFh-i1-ewK" id="ofD-dD-vcr"/>
                         <outlet property="tableView" destination="L8d-Ub-DTy" id="qAp-jB-XhY"/>
