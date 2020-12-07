@@ -245,7 +245,6 @@ class AddEditTableVC: UITableViewController  {
     }
     
     @IBAction func cancelButtonPressed(_ sender: UIBarButtonItem) {
-        
         recipeToEdit = recipeUnchanged
         do {
             try Constants.context.save()
@@ -281,6 +280,7 @@ class AddEditTableVC: UITableViewController  {
 extension AddEditTableVC: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         if viewController.isKind(of: RecipeDetailsVC.self) {
+            print("leaving AddEditTableVC for RecipeDetails!")
             (viewController as? RecipeDetailsVC)?.recipeToEdit = recipeToEdit
         }
     }

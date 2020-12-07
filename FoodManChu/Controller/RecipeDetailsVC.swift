@@ -53,13 +53,15 @@ class RecipeDetailsVC: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-//    override func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(animated)
-//    }
-//
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        print("REcipeDetails ViewDidApear")
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("view will appear")
+    }
     
     func configureUI() {
         addBorder(view: ingredientsUnderlineView)
@@ -119,6 +121,7 @@ class RecipeDetailsVC: UIViewController {
 
 extension RecipeDetailsVC: ModalHandler {
     func modalDismissed (recipe: Recipe) {
+        print("modalDismissed! \(recipeToEdit!)")
         recipeToEdit = recipe
         recipeIngredients = (recipeToEdit!.ingredients?.allObjects as? [Ingredient])!
         displayIngredientList()
