@@ -53,16 +53,6 @@ class RecipeDetailsVC: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        print("REcipeDetails ViewDidApear")
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        print("view will appear")
-    }
-    
     func configureUI() {
         addBorder(view: ingredientsUnderlineView)
         addBorder(view: instructionsUnderlineView)
@@ -80,7 +70,10 @@ class RecipeDetailsVC: UIViewController {
     func displayInstructionList() {
         var instructionList = String()
         for instruction in recipeInstructions {
-            instructionList += instruction.summary! + "\n"
+            if let summary = instruction.summary {
+                instructionList += summary + "\n"
+            }
+            
         }
         listLabel.text = instructionList
     }
@@ -121,9 +114,11 @@ class RecipeDetailsVC: UIViewController {
 
 extension RecipeDetailsVC: ModalHandler {
     func modalDismissed (recipe: Recipe) {
-        print("modalDismissed! \(recipeToEdit!)")
         recipeToEdit = recipe
         recipeIngredients = (recipeToEdit!.ingredients?.allObjects as? [Ingredient])!
+        isIngredientsSelected = true
+        ingredientsUnderlineView.isHidden = false
+        instructionsUnderlineView.isHidden = true
         displayIngredientList()
         configureUI()
     }

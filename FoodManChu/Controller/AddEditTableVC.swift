@@ -23,6 +23,7 @@ class AddEditTableVC: UITableViewController  {
     var categoryPickerData: [String] = [String]()
     var delegate: ModalHandler?
     var ingredientsToReset = [Ingredient]()
+    var instructionsToReset = [Instruction]()
     var isNewRecipe = false
     var isPickerVisible = false
     var newRecipeAddDelegate: newRecipeModalHandler?
@@ -30,6 +31,8 @@ class AddEditTableVC: UITableViewController  {
     var recipeToEdit: Recipe?
     var recipeUnchanged: Recipe?
     var selectedIngredients = [Ingredient]()
+    var selectedInstructions = [Instruction]()
+    var tempInstructions: [Instruction]?
     var tempCategory: String?
     var tempPrepTime: String?
     var tempRecipeName: String?
@@ -42,9 +45,11 @@ class AddEditTableVC: UITableViewController  {
         categoryPicker.delegate = self
         categoryPicker.dataSource = self
         populateSelectedIngredients()
+        populateSelectedInstructions()
         createTapGestureForCategoryPicker()
         configureUI()
         fetchCategories()
+        prepTimeTextField.delegate = self
     }
     
     func populateSelectedIngredients() {
@@ -52,6 +57,16 @@ class AddEditTableVC: UITableViewController  {
             if let ingredients = recipeToEdit.ingredients {
                 for i in ingredients {
                     selectedIngredients.append(i as! Ingredient)
+                }
+            }
+        }
+    }
+    
+    func populateSelectedInstructions() {
+        if let recipeToEdit = recipeToEdit { // populate 'selectedInstructions' var with recipeToEdit ingredients
+            if let instructions = recipeToEdit.instructions {
+                for i in instructions {
+                    selectedInstructions.append(i as! Instruction)
                 }
             }
         }
@@ -152,6 +167,12 @@ class AddEditTableVC: UITableViewController  {
                 destination.selectedIngredients = selectedIngredients
             }
         }
+        if segue.identifier == "InstructionSegue" {
+            if let destination = segue.destination as? InstructionsVC {
+                destination.recipeToEdit = recipeToEdit
+                destination.selectedInstructions = selectedInstructions
+            }
+        }
     }
     
     func configureUI() {
@@ -182,6 +203,7 @@ class AddEditTableVC: UITableViewController  {
         }
         
         if selectedIngredients.count > 0 {
+            
             addIngredientsLabel.text = "" // reset to show following list
             let tempIngredients = selectedIngredients
             for i in tempIngredients {
@@ -189,6 +211,28 @@ class AddEditTableVC: UITableViewController  {
             }
         } else {
             addIngredientsLabel.text = "Add Ingredients (Required)"
+        }
+        
+        if let instructions = tempInstructions {
+            if instructions.count > 0 {
+                addInstructionsLabel.text = "" // reset to show following list
+                for i in tempInstructions! {
+                    if let summary = i.summary {
+                        addInstructionsLabel.text! += "\(summary),"
+                    }
+                }
+            }
+            
+        } else if selectedInstructions.count > 0 {
+            addInstructionsLabel.text = "" // reset to show following list
+            let tempInstructions = selectedInstructions
+            for i in tempInstructions {
+                if let summary = i.summary {
+                    addInstructionsLabel.text! += "\(summary),"
+                }
+            }
+        } else {
+            addInstructionsLabel.text = "Add Instructions (Required)"
         }
     }
     
@@ -199,7 +243,7 @@ class AddEditTableVC: UITableViewController  {
     }
     
     @IBAction func saveButtonPressed(_ sender: UIBarButtonItem) {
-        if recipeNameTextField.text!.count < 2 || addIngredientsLabel.text == "Add Ingredients (Required)" {
+        if recipeNameTextField.text!.count < 2 || addIngredientsLabel.text == "Add Ingredients (Required)" || addInstructionsLabel.text == "Add Instructions (Required)" {
             showAlert()
             return
         }
@@ -209,10 +253,23 @@ class AddEditTableVC: UITableViewController  {
             recipe.categoryType = tempCategory
             recipe.summaryDescription = recipeDescriptionTextField.text!
             recipe.name = recipeNameTextField.text
-            recipe.prepTime = Int64(prepTimeTextField.text!)!
+            if let time = prepTimeTextField.text {
+                recipe.prepTime = Int64(time) ?? 0
+            }
+            
             for i in selectedIngredients {
                 recipe.addToIngredients(i)
             }
+            
+            if let instructions = tempInstructions {
+                if instructions.count > 0 {
+                    recipe.instructions = nil // reset instructions
+                    for i in tempInstructions! {
+                        print("holy shit")
+                        recipe.addToInstructions(i)
+                    }
+                }
+            } 
             
             do {
                 try Constants.context.save()
@@ -227,13 +284,30 @@ class AddEditTableVC: UITableViewController  {
             recipeToEdit?.summaryDescription = recipeDescriptionTextField.text!
             recipeToEdit?.name = recipeNameTextField.text!
             recipeToEdit?.categoryType = tempCategory
-            recipeToEdit?.prepTime = Int64(prepTimeTextField.text!)!
+            if let time = prepTimeTextField.text {
+                recipeToEdit?.prepTime = Int64(time) ?? 0
+            }
             // clear out recipeToEdit ingredients
             recipeToEdit?.ingredients = nil
             
             for i in selectedIngredients {
                 recipeToEdit?.addToIngredients(i)
             }
+            
+            if let instructions = tempInstructions {
+                if instructions.count > 0 {
+                    recipeToEdit?.instructions = nil // reset instructions
+                    for i in tempInstructions! {
+                        recipeToEdit?.addToInstructions(i)
+                    }
+                }
+            } else {
+                for i in selectedInstructions {
+                    recipeToEdit?.addToInstructions(i)
+                }
+            }
+            
+            
             do {
                 try Constants.context.save()
             }
@@ -245,13 +319,7 @@ class AddEditTableVC: UITableViewController  {
     }
     
     @IBAction func cancelButtonPressed(_ sender: UIBarButtonItem) {
-        recipeToEdit = recipeUnchanged
-        do {
-            try Constants.context.save()
-        }
-        catch {
-            print(error)
-        }
+        delegate?.modalDismissed(recipe: recipeToEdit!)
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -306,6 +374,17 @@ extension AddEditTableVC: UIPickerViewDelegate, UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         categoryTextField.text = categoryPickerData[row]
         tempCategory = categoryPickerData[row]
+    }
+}
+
+extension AddEditTableVC: UITextFieldDelegate {
+    func textField(_ textField: UITextField,
+                   shouldChangeCharactersIn range: NSRange,
+                   replacementString string: String) -> Bool {
+        guard NSCharacterSet(charactersIn: "0123456789").isSuperset(of: CharacterSet(charactersIn: string)) else {
+            return false
+        }
+        return true
     }
 }
 

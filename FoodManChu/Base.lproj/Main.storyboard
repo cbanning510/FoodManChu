@@ -468,6 +468,9 @@
                                                 <constraint firstAttribute="bottomMargin" secondItem="PTN-Ji-Nlp" secondAttribute="bottom" id="vIH-iN-fWd"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="Tre-cg-CFJ" kind="show" identifier="InstructionSegue" id="7uA-r4-M9N"/>
+                                        </connections>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
@@ -554,7 +557,6 @@
                         <outlet property="prepTimeTextField" destination="CfH-Kn-sgV" id="PSj-ZV-ouJ"/>
                         <outlet property="recipeDescriptionTextField" destination="bhj-rb-L90" id="zyb-l0-rLj"/>
                         <outlet property="recipeNameTextField" destination="AFh-i1-ewK" id="ofD-dD-vcr"/>
-                        <outlet property="tableView" destination="L8d-Ub-DTy" id="qAp-jB-XhY"/>
                         <segue destination="Bz0-eG-etw" kind="unwind" identifier="HomePageSegue" unwindAction="myUnwindActionWithUnwindSegue:" id="ado-we-U5m"/>
                     </connections>
                 </tableViewController>
@@ -629,9 +631,7 @@
                             <constraint firstAttribute="trailing" secondItem="Qla-QL-T2T" secondAttribute="trailing" id="zwP-9n-VAC"/>
                         </constraints>
                     </view>
-                    <toolbarItems>
-                        <barButtonItem title="Item" id="wJu-ZI-q4m"/>
-                    </toolbarItems>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" title="Ingredients" id="J2g-tG-HaV">
                         <barButtonItem key="backBarButtonItem" title="Cherry" id="jVY-kU-oxU"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="BHp-q1-kRE">
@@ -648,6 +648,71 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9dX-Vi-hyr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="7181.6000000000004" y="-199.25037481259372"/>
+        </scene>
+        <!--Instructions-->
+        <scene sceneID="vBC-j6-Mtf">
+            <objects>
+                <viewController id="Tre-cg-CFJ" customClass="InstructionsVC" customModule="FoodManChu" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="1xh-h5-O6H">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="X7y-xh-Otw">
+                                <rect key="frame" x="0.0" y="44" width="375" height="574"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="InstructionCell" id="7aQ-Yz-UXI" customClass="InstructionCell" customModule="FoodManChu" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="21.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="7aQ-Yz-UXI" id="r6K-1c-Mdh">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="21.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1c7-tW-e2N">
+                                                    <rect key="frame" x="16" y="0.0" width="359" height="21.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="1c7-tW-e2N" firstAttribute="top" secondItem="r6K-1c-Mdh" secondAttribute="top" id="ZKS-vE-rnf"/>
+                                                <constraint firstAttribute="trailing" secondItem="1c7-tW-e2N" secondAttribute="trailing" id="Zl6-tm-ekf"/>
+                                                <constraint firstItem="1c7-tW-e2N" firstAttribute="leading" secondItem="r6K-1c-Mdh" secondAttribute="leading" constant="16" id="nae-4Z-CTE"/>
+                                                <constraint firstAttribute="bottom" secondItem="1c7-tW-e2N" secondAttribute="bottom" id="vT9-xk-5dd"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="instructionLabel" destination="1c7-tW-e2N" id="qPg-hm-LyH"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="UEj-v9-KbK"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="X7y-xh-Otw" firstAttribute="trailing" secondItem="UEj-v9-KbK" secondAttribute="trailing" id="CyC-BB-AAI"/>
+                            <constraint firstItem="X7y-xh-Otw" firstAttribute="top" secondItem="UEj-v9-KbK" secondAttribute="top" id="JAC-WF-23H"/>
+                            <constraint firstItem="X7y-xh-Otw" firstAttribute="leading" secondItem="UEj-v9-KbK" secondAttribute="leading" id="Voj-2j-VuW"/>
+                            <constraint firstItem="X7y-xh-Otw" firstAttribute="bottom" secondItem="UEj-v9-KbK" secondAttribute="bottom" id="uhv-Mu-Gcx"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Instructions" id="EoZ-I7-Q0m">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Hla-Sw-TWi">
+                            <connections>
+                                <action selector="addButtonPressed:" destination="Tre-cg-CFJ" id="3un-TV-DqI"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="tableView" destination="X7y-xh-Otw" id="cI9-BY-9Kc"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4ho-G5-2au" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="7888.8000000000002" y="-186.65667166416793"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="mbh-Ve-4Cx">
