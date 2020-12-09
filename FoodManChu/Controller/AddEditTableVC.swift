@@ -57,13 +57,24 @@ class AddEditTableVC: UITableViewController  {
     
     @IBAction func setPicture(_ sender: Any) {
         self.openImagePicker()
-//        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
-//            imagePicker.delegate = self
-//            imagePicker.sourceType = .photoLibrary
-//            imagePicker.allowsEditing = false
-//
-//            present(imagePicker, animated: true, completion: nil)
-//        }
+    }
+    @IBAction func copyButtonPressed(_ sender: UIBarButtonItem) {
+        let alert = UIAlertController(title: "Copy Recipe", message: "Duplicate Recipe?", preferredStyle: .alert)
+        let saveButton = UIAlertAction(title: "Copy", style: .default) { (action) in
+            let newRecipe = self.recipeToEdit!.copyEntireObjectGraph(context: Constants.context)
+            do {
+                try Constants.context.save()
+                self.performSegue(withIdentifier: "HomePageSegue", sender: nil)
+            }
+            catch {
+                print(error)
+            }
+        }
+        alert.addAction(saveButton)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        alert.addAction(cancelAction)
+        self.present(alert, animated: true, completion: nil)
+        
     }
     
     func populateSelectedIngredients() {
@@ -183,6 +194,9 @@ class AddEditTableVC: UITableViewController  {
         }
         if segue.identifier == "InstructionSegue" {
             if let destination = segue.destination as? InstructionsVC {
+                tempSummaryDescription = recipeDescriptionTextField.text! // hold changes to text fields
+                tempRecipeName = recipeNameTextField.text!
+                tempPrepTime = prepTimeTextField.text
                 destination.recipeToEdit = recipeToEdit
                 destination.selectedInstructions = selectedInstructions
             }
@@ -222,7 +236,6 @@ class AddEditTableVC: UITableViewController  {
         }
         
         if selectedIngredients.count > 0 {
-            
             addIngredientsLabel.text = "" // reset to show following list
             let tempIngredients = selectedIngredients
             for i in tempIngredients {
@@ -267,15 +280,12 @@ class AddEditTableVC: UITableViewController  {
             return
         }
         
-        
-        
         if isNewRecipe {
             let recipe = Recipe(context: Constants.context)
             if let image = imageView.image {
                 let png = image.pngData()
                 recipe.image = png
             }
-            
             
             recipe.categoryType = tempCategory
             recipe.summaryDescription = recipeDescriptionTextField.text!
@@ -299,7 +309,7 @@ class AddEditTableVC: UITableViewController  {
             
             do {
                 try Constants.context.save()
-                newRecipeAddDelegate?.dismissModal()
+                //newRecipeAddDelegate?.dismissModal()
             }
             catch {
                 print(error)
@@ -438,17 +448,99 @@ extension AddEditTableVC: UIImagePickerControllerDelegate {
     }
 }
 
-//extension AddEditTableVC: UIImagePickerControllerDelegate {
-    //func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-      //  picker.dismiss(animated: true, completion: nil)
-//        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-       // if let image = info[.originalImage] as? UIImage {
-          //  imageView.image = image //display picked image in UI
-      //  }
-        // save image to coredata:
-//        let png = imageView.image?.pngData()
-//        DatabaseHelper.instance.saveImageInCoreData(at: png!)
-   // }
-//}
+extension NSManagedObject {
+
+    func copyEntireObjectGraph(context: NSManagedObjectContext) -> NSManagedObject {
+
+        var cache = Dictionary<NSManagedObjectID, NSManagedObject>()
+        return cloneObject(context: context, cache: &cache)
+
+    }
+
+    func cloneObject(context: NSManagedObjectContext, cache alreadyCopied: inout Dictionary<NSManagedObjectID, NSManagedObject>) -> NSManagedObject {
+
+        guard let entityName = self.entity.name else {
+            fatalError("source.entity.name == nil")
+        }
+
+        if let storedCopy = alreadyCopied[self.objectID] {
+            return storedCopy
+        }
+
+        let cloned = NSEntityDescription.insertNewObject(forEntityName: entityName, into: context)
+    alreadyCopied[self.objectID] = cloned
+
+        if let attributes = NSEntityDescription.entity(forEntityName: entityName, in: context)?.attributesByName {
+
+            for key in attributes.keys {
+                cloned.setValue(self.value(forKey: key), forKey: key)
+            }
+
+        }
+
+        if let relationships = NSEntityDescription.entity(forEntityName: entityName, in: context)?.relationshipsByName {
+
+            for (key, value) in relationships {
+
+                if value.isToMany {
+
+                    if let sourceSet = self.value(forKey: key) as? NSMutableOrderedSet {
+
+                        guard let clonedSet = cloned.value(forKey: key) as? NSMutableOrderedSet else {
+                            fatalError("Could not cast relationship \(key) to an NSMutableOrderedSet")
+                        }
+
+                        let enumerator = sourceSet.objectEnumerator()
+
+                        var nextObject = enumerator.nextObject() as? NSManagedObject
+
+                        while let relatedObject = nextObject {
+
+                            let clonedRelatedObject = relatedObject.cloneObject(context: context, cache: &alreadyCopied)
+                            clonedSet.add(clonedRelatedObject)
+                            nextObject = enumerator.nextObject() as? NSManagedObject
+
+                        }
+
+                    } else if let sourceSet = self.value(forKey: key) as? NSMutableSet {
+
+                        guard let clonedSet = cloned.value(forKey: key) as? NSMutableSet else {
+                            fatalError("Could not cast relationship \(key) to an NSMutableSet")
+                        }
+
+                        let enumerator = sourceSet.objectEnumerator()
+
+                        var nextObject = enumerator.nextObject() as? NSManagedObject
+
+                        while let relatedObject = nextObject {
+
+                            let clonedRelatedObject = relatedObject.cloneObject(context: context, cache: &alreadyCopied)
+                            clonedSet.add(clonedRelatedObject)
+                            nextObject = enumerator.nextObject() as? NSManagedObject
+
+                        }
+
+                    }
+
+                } else {
+
+                    if let relatedObject = self.value(forKey: key) as? NSManagedObject {
+
+                        let clonedRelatedObject = relatedObject.cloneObject(context: context, cache: &alreadyCopied)
+                        cloned.setValue(clonedRelatedObject, forKey: key)
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        return cloned
+
+    }
+
+}
 
 

@@ -130,6 +130,7 @@ class MainVC: UIViewController,  UISearchBarDelegate {
     }
     
     @IBAction func segmentedControlChanged(_ sender: UISegmentedControl) {
+        self.searchBar.becomeFirstResponder()
         self.searchBar.text = nil
         filteredRecipes = []
         switch segmentedControl.selectedSegmentIndex {
