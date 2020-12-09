@@ -68,14 +68,17 @@ class MainVC: UIViewController,  UISearchBarDelegate {
             for recipe in recipes {
                 switch selectedSearchByType {
                 case "Ingredient":
-                    let ingredients = recipe.ingredients as! Set<Ingredient>
-                    for i in ingredients {
-                        if i.name!.lowercased().contains(searchBar.text!.lowercased()) {
-                            if !filteredRecipes.contains(recipe) {
-                                filteredRecipes.append(recipe)
-                            }                            
+                    if let ingredients = recipe.ingredients {
+                        for i in ingredients {
+                            if (i as AnyObject).name!.lowercased().contains(searchBar.text!.lowercased()) {
+                                if !filteredRecipes.contains(recipe) {
+                                    filteredRecipes.append(recipe)
+                                }
+                            }
                         }
                     }
+                    //let ingredients = recipe.ingredients as! Set<Ingredient>
+                    
                 case "Name":
                     if recipe.name!.lowercased().contains(searchBar.text!.lowercased()) {
                         filteredRecipes.append(recipe)
