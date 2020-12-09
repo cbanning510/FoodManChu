@@ -11,6 +11,7 @@ import CoreData
 class InstructionsVC: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var editDoneButton: UIBarButtonItem!
     
     var instructions: [Instruction]?
     var selectedInstructions = [Instruction]()
@@ -23,10 +24,44 @@ class InstructionsVC: UIViewController {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.isEditing = false
         navigationController?.delegate = self
         attemptInstructionFetch()
-        createTempInstructions()       
+        createTempInstructions()
+        setEditing(true, animated: true)
     }
+    
+    @IBAction func toggleEditing(_ sender: Any) {
+        setEditing(!isEditing, animated: true)
+        tableView.isEditing = !tableView.isEditing
+    }
+
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+
+        let systemItem: UIBarButtonItem.SystemItem = editing
+                    ? .edit
+                    : .done
+
+                let newButton = UIBarButtonItem(
+                    barButtonSystemItem: systemItem,
+                    target: self,
+                    action: #selector(toggleEditing(_:)))
+        
+                let addButton = UIBarButtonItem(
+                    barButtonSystemItem: .add,
+                    target: self,
+                    action: #selector(addButtonPressed(_:)))
+
+        navigationItem.setRightBarButtonItems([addButton, newButton], animated: true)
+    }
+    
+    //@IBAction func editButtonPressed(_ sender: UIBarButtonItem) {
+        // change edit button to done
+        // turn on editing to true
+        //tableView.isEditing = true
+      //  setEditing(!isEditing, animated: true)//
+  // }
     
     func createTempInstructions() {
         for i in selectedInstructions {
@@ -68,6 +103,20 @@ class InstructionsVC: UIViewController {
 
 extension InstructionsVC: UITableViewDelegate, UITableViewDataSource {
     
+    internal func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .none
+    }
+
+    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        return false
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let movedObject = self.tempInstructions[sourceIndexPath.row]
+        tempInstructions.remove(at: sourceIndexPath.row)
+        tempInstructions.insert(movedObject, at: destinationIndexPath.row)
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tempInstructions.count
     }
@@ -85,9 +134,9 @@ extension InstructionsVC: UITableViewDelegate, UITableViewDataSource {
         return 40
     }
     
-    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        return .delete
-    }
+//    internal func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+//        return .delete
+//    }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         

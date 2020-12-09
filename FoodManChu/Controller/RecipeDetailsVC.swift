@@ -27,8 +27,9 @@ class RecipeDetailsVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        recipeIngredients = (recipeToEdit!.ingredients?.allObjects as? [Ingredient])!
-        recipeInstructions = (recipeToEdit!.instructions?.allObjects as? [Instruction])!
+        recipeIngredients = (recipeToEdit!.ingredients?.array as? [Ingredient])!
+        recipeInstructions = (recipeToEdit!.instructions?.array as? [Instruction])!
+        //recipeInstructions = ((recipeToEdit!.instructions?.array as? [Instruction])!)
         instructionsUnderlineView.isHidden = true
         displayIngredientList()
         recipeImage.addBlackGradientLayerInBackground(frame: recipeImage.bounds, colors:[.clear, #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.6382170377)])
@@ -115,7 +116,7 @@ class RecipeDetailsVC: UIViewController {
 extension RecipeDetailsVC: ModalHandler {
     func modalDismissed (recipe: Recipe) {
         recipeToEdit = recipe
-        recipeIngredients = (recipeToEdit!.ingredients?.allObjects as? [Ingredient])!
+        recipeIngredients = (recipeToEdit!.ingredients?.array as? [Ingredient])!
         isIngredientsSelected = true
         ingredientsUnderlineView.isHidden = false
         instructionsUnderlineView.isHidden = true

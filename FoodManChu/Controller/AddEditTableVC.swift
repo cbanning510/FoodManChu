@@ -265,7 +265,6 @@ class AddEditTableVC: UITableViewController  {
                 if instructions.count > 0 {
                     recipe.instructions = nil // reset instructions
                     for i in tempInstructions! {
-                        print("holy shit")
                         recipe.addToInstructions(i)
                     }
                 }

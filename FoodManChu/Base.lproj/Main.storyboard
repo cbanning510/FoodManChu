@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="d6B-Wp-RGw">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -595,14 +594,14 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="IngredientCell" id="Psf-s2-ABy" userLabel="IngredientCell" customClass="IngredientCell" customModule="FoodManChu" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="20"/>
+                                        <rect key="frame" x="0.0" y="28" width="375" height="20.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Psf-s2-ABy" id="WH4-K5-P7k">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="20"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="20.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kmM-cb-Tn2">
-                                                    <rect key="frame" x="16" y="0.0" width="359" height="20"/>
+                                                    <rect key="frame" x="16" y="0.0" width="359" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -662,14 +661,14 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="InstructionCell" id="7aQ-Yz-UXI" customClass="InstructionCell" customModule="FoodManChu" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="21.5"/>
+                                        <rect key="frame" x="0.0" y="28" width="375" height="21"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="7aQ-Yz-UXI" id="r6K-1c-Mdh">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="21.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="21"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1c7-tW-e2N">
-                                                    <rect key="frame" x="16" y="0.0" width="359" height="21.5"/>
+                                                    <rect key="frame" x="16" y="0.0" width="359" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -699,14 +698,22 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Instructions" id="EoZ-I7-Q0m">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Hla-Sw-TWi">
-                            <connections>
-                                <action selector="addButtonPressed:" destination="Tre-cg-CFJ" id="3un-TV-DqI"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="add" id="Hla-Sw-TWi">
+                                <connections>
+                                    <action selector="addButtonPressed:" destination="Tre-cg-CFJ" id="3un-TV-DqI"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="square.and.pencil" catalog="system" id="DU7-Ph-JZb">
+                                <connections>
+                                    <action selector="editButtonPressed:" destination="Tre-cg-CFJ" id="Lgp-sS-YJ2"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="editDoneButton" destination="DU7-Ph-JZb" id="AZa-tn-CvO"/>
                         <outlet property="tableView" destination="X7y-xh-Otw" id="cI9-BY-9Kc"/>
                     </connections>
                 </viewController>
@@ -738,6 +745,7 @@
     </inferredMetricsTieBreakers>
     <resources>
         <image name="chicken-parmesan-recipe-1" width="360" height="360"/>
+        <image name="square.and.pencil" catalog="system" width="128" height="115"/>
         <image name="trash" catalog="system" width="121" height="128"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

@@ -22,8 +22,8 @@
         <attribute name="prepTime" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="summaryDescription" optional="YES" attributeType="String"/>
         <relationship name="category" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="recipe" inverseEntity="Category"/>
-        <relationship name="ingredients" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Ingredient" inverseName="recipe" inverseEntity="Ingredient"/>
-        <relationship name="instructions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Instruction" inverseName="recipe" inverseEntity="Instruction"/>
+        <relationship name="ingredients" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Ingredient" inverseName="recipe" inverseEntity="Ingredient"/>
+        <relationship name="instructions" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Instruction" inverseName="recipe" inverseEntity="Instruction"/>
     </entity>
     <elements>
         <element name="Category" positionX="48.9765625" positionY="178.8671875" width="128" height="73"/>
