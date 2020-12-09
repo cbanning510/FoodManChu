@@ -20,6 +20,9 @@ class RecipeCell: UITableViewCell {
         let prepTimeString = String(recipe.prepTime)
         prepTime.text = "prep time: \(prepTimeString) min"
         summary.text = recipe.summaryDescription
-        category.text = recipe.categoryType       
+        category.text = recipe.categoryType
+        if let image = recipe.image {
+            thumb.image = UIImage(data: image)
+        }
     }
 }

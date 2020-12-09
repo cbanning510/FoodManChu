@@ -32,6 +32,9 @@ class RecipeDetailsVC: UIViewController {
         //recipeInstructions = ((recipeToEdit!.instructions?.array as? [Instruction])!)
         instructionsUnderlineView.isHidden = true
         displayIngredientList()
+        if let image = recipeToEdit!.image {
+            recipeImage.image = UIImage(data: image)
+        }
         recipeImage.addBlackGradientLayerInBackground(frame: recipeImage.bounds, colors:[.clear, #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.6382170377)])
     }
     
@@ -58,6 +61,9 @@ class RecipeDetailsVC: UIViewController {
         addBorder(view: ingredientsUnderlineView)
         addBorder(view: instructionsUnderlineView)
         recipeTitleLabel.text = recipeToEdit?.name
+        if let image = recipeToEdit!.image {
+            recipeImage.image = UIImage(data: image)
+        }
     }
     
     func displayIngredientList() {

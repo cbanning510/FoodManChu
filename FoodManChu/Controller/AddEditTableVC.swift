@@ -17,6 +17,9 @@ class AddEditTableVC: UITableViewController  {
     @IBOutlet weak var addInstructionsLabel: UILabel!
     @IBOutlet weak var addIngredientsCell: UITableViewCell!
     @IBOutlet weak var prepTimeTextField: UITextField!
+    @IBOutlet var imageView: UIImageView!
+    
+    var imagePicker = UIImagePickerController()
     
     var categories: [Category]?
     var categoryPicker  = UIPickerView()
@@ -50,6 +53,17 @@ class AddEditTableVC: UITableViewController  {
         configureUI()
         fetchCategories()
         prepTimeTextField.delegate = self
+    }
+    
+    @IBAction func setPicture(_ sender: Any) {
+        self.openImagePicker()
+//        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
+//            imagePicker.delegate = self
+//            imagePicker.sourceType = .photoLibrary
+//            imagePicker.allowsEditing = false
+//
+//            present(imagePicker, animated: true, completion: nil)
+//        }
     }
     
     func populateSelectedIngredients() {
@@ -134,7 +148,7 @@ class AddEditTableVC: UITableViewController  {
             categoryPicker.contentMode = .center
             categoryPicker.frame = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 300)
             view.addSubview(categoryPicker)
-                    
+            
             toolBar = UIToolbar.init(frame: CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 50))
             toolBar.barStyle = .default
             toolBar.isTranslucent = true
@@ -186,6 +200,11 @@ class AddEditTableVC: UITableViewController  {
             recipeDescriptionTextField.text = description
         } else {
             recipeDescriptionTextField.text = recipeToEdit?.summaryDescription
+        }
+        if !isNewRecipe {
+            if let image = recipeToEdit!.image {
+                imageView.image = UIImage(data: image)
+            }
         }
         
         if let category = tempCategory {
@@ -248,8 +267,16 @@ class AddEditTableVC: UITableViewController  {
             return
         }
         
+        
+        
         if isNewRecipe {
             let recipe = Recipe(context: Constants.context)
+            if let image = imageView.image {
+                let png = image.pngData()
+                recipe.image = png
+            }
+            
+            
             recipe.categoryType = tempCategory
             recipe.summaryDescription = recipeDescriptionTextField.text!
             recipe.name = recipeNameTextField.text
@@ -279,6 +306,11 @@ class AddEditTableVC: UITableViewController  {
             }
             self.performSegue(withIdentifier: "HomePageSegue", sender: nil)
         } else  {
+            
+            if let image = imageView.image {
+                let png = image.pngData()
+                recipeToEdit?.image = png
+            }
             
             recipeToEdit?.summaryDescription = recipeDescriptionTextField.text!
             recipeToEdit?.name = recipeNameTextField.text!
@@ -386,5 +418,37 @@ extension AddEditTableVC: UITextFieldDelegate {
         return true
     }
 }
+
+extension AddEditTableVC: UIImagePickerControllerDelegate {
+    func openImagePicker() {
+        print("openImagePicker")
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary){
+            imagePicker.delegate = self
+            imagePicker.sourceType = .photoLibrary
+            imagePicker.allowsEditing = false
+            present(imagePicker, animated: true, completion: nil)
+        }
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        dismiss(animated: true, completion: nil)
+        if let img = info[.originalImage] as? UIImage {
+            self.imageView.image = img
+        }
+    }
+}
+
+//extension AddEditTableVC: UIImagePickerControllerDelegate {
+    //func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+      //  picker.dismiss(animated: true, completion: nil)
+//        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+       // if let image = info[.originalImage] as? UIImage {
+          //  imageView.image = image //display picked image in UI
+      //  }
+        // save image to coredata:
+//        let png = imageView.image?.pngData()
+//        DatabaseHelper.instance.saveImageInCoreData(at: png!)
+   // }
+//}
 
 

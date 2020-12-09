@@ -18,6 +18,7 @@
         <attribute name="categoryType" optional="YES" attributeType="String"/>
         <attribute name="cookTime" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="image" optional="YES" attributeType="Binary"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="prepTime" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="summaryDescription" optional="YES" attributeType="String"/>
@@ -29,6 +30,6 @@
         <element name="Category" positionX="48.9765625" positionY="178.8671875" width="128" height="73"/>
         <element name="Ingredient" positionX="-190.4375" positionY="227.96875" width="128" height="103"/>
         <element name="Instruction" positionX="-72" positionY="270" width="128" height="73"/>
-        <element name="Recipe" positionX="-72" positionY="216" width="128" height="178"/>
+        <element name="Recipe" positionX="-72" positionY="216" width="128" height="193"/>
     </elements>
 </model>
