@@ -17,6 +17,7 @@ class IngredientsVC: UIViewController, NSFetchedResultsControllerDelegate {
     var selectedIngredients = [Ingredient]()
     var recipeToEdit: Recipe?
     weak var recipeDetailsVC: RecipeDetailsVC?
+    var newlyAddedIngredientName: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,18 +44,27 @@ class IngredientsVC: UIViewController, NSFetchedResultsControllerDelegate {
         
         let submitButton = UIAlertAction(title: "Add", style: .default) { (action) in
             let textField = alert.textFields![0]
-            let newIngredient = Ingredient(context: Constants.context)
-            newIngredient.name = textField.text
+            if textField.text != "" {
+                let newIngredient = Ingredient(context: Constants.context)
+                newIngredient.name = textField.text
+                self.newlyAddedIngredientName  = newIngredient.name
+                newIngredient.isCellSelected = true
+                
+                do {
+                    try Constants.context.save()
+                    self.selectedIngredients.append(newIngredient)
+                }
+                catch {
+                    print(error)
+                }
+                self.attemptIngredientFetch()
+                self.tableView.reloadData()
+            }
             
-            do {
-                try Constants.context.save()
-            }
-            catch {
-                print(error)
-            }
-            self.attemptIngredientFetch()
         }
         alert.addAction(submitButton)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        alert.addAction(cancelAction)
         self.present(alert, animated: true, completion: nil)
     }
     

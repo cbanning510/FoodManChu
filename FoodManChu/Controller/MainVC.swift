@@ -36,9 +36,23 @@ class MainVC: UIViewController,  UISearchBarDelegate {
         tableView.delegate = self
         tableView.dataSource = self
         
+        self.searchBar.resignFirstResponder()
         fetchCategories()
         attemptFetch()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        print("viewDidAppear in nMainVC")
+        attemptFetch()
+        tableView.reloadData()
+    }
+    
+//    override func viewWillAppear(_ animated: Bool) {
+//        print("view Will Appear MainVC!!!")
+//        //attemptFetch()
+//
+//    }
+    
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
             searchBar.resignFirstResponder()
@@ -67,6 +81,8 @@ class MainVC: UIViewController,  UISearchBarDelegate {
         } else {
             for recipe in recipes {
                 switch selectedSearchByType {
+                case "All":
+                    filteredRecipes = recipes
                 case "Ingredient":
                     if let ingredients = recipe.ingredients {
                         for i in ingredients {
@@ -125,12 +141,8 @@ class MainVC: UIViewController,  UISearchBarDelegate {
         // home base
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        attemptFetch()
-    }
-    
     @IBAction func segmentedControlChanged(_ sender: UISegmentedControl) {
-        self.searchBar.becomeFirstResponder()
+        //self.searchBar.becomeFirstResponder()
         self.searchBar.text = nil
         filteredRecipes = []
         switch segmentedControl.selectedSegmentIndex {
@@ -159,6 +171,7 @@ class MainVC: UIViewController,  UISearchBarDelegate {
             populateCategoryPicker()
             self.isPickerVisible = true
             searchBar.isUserInteractionEnabled = false
+            segmentedControl.isUserInteractionEnabled = false
             categoryPicker.isHidden = false
             categoryPicker.backgroundColor = UIColor.white
             categoryPicker.setValue(UIColor.black, forKey: "textColor")
@@ -181,6 +194,7 @@ class MainVC: UIViewController,  UISearchBarDelegate {
         isPickerVisible = false
         search()
         searchBar.isUserInteractionEnabled = true
+        segmentedControl.isUserInteractionEnabled = true
     }
     
     func attemptFetch() {
@@ -213,7 +227,7 @@ extension MainVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let recipe = recipes[indexPath.row]
+        let recipe = filteredRecipes[indexPath.row]
         performSegue(withIdentifier: "DetailSegue", sender: recipe)
     }
     
@@ -222,6 +236,7 @@ extension MainVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        view.endEditing(true)
         if segue.identifier == "DetailSegue" {
             if let destination = segue.destination as? RecipeDetailsVC {
                 if let recipe = sender as? Recipe {
@@ -230,6 +245,7 @@ extension MainVC: UITableViewDelegate, UITableViewDataSource {
             }
         }
         if segue.identifier == "AddRecipeSegue" {
+            view.endEditing(true)
             if let destVC = segue.destination as? UINavigationController,
                let targetController = destVC.topViewController as? AddEditTableVC {
                 targetController.newRecipeAddDelegate = self
@@ -263,14 +279,17 @@ extension MainVC: UIPickerViewDelegate, UIPickerViewDataSource {
 }
 
 extension MainVC: newRecipeModalHandler {
+    
     func dismissModal() { // protocol method for data passing between VC's
         attemptFetch()
+        tableView.reloadData()
     }
 }
 
 extension MainVC: ModalHandler {
     func modalDismissed(recipe: Recipe) { // protocol method for data passing between VC's
         attemptFetch()
+        tableView.reloadData()
     }
 }
 

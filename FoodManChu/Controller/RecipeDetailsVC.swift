@@ -29,7 +29,6 @@ class RecipeDetailsVC: UIViewController {
         configureUI()
         recipeIngredients = (recipeToEdit!.ingredients?.array as? [Ingredient])!
         recipeInstructions = (recipeToEdit!.instructions?.array as? [Instruction])!
-        //recipeInstructions = ((recipeToEdit!.instructions?.array as? [Instruction])!)
         instructionsUnderlineView.isHidden = true
         displayIngredientList()
         if let image = recipeToEdit!.image {

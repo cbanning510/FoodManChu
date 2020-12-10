@@ -53,28 +53,24 @@ class AddEditTableVC: UITableViewController  {
         configureUI()
         fetchCategories()
         prepTimeTextField.delegate = self
+        recipeNameTextField.addTarget(nil, action:Selector(("firstResponderAction:")), for:.editingDidEndOnExit)
+        recipeDescriptionTextField.addTarget(nil, action:Selector(("firstResponderAction:")), for:.editingDidEndOnExit)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        configureUI()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        resetIngredients()
+        if let recipeToEdit = recipeToEdit {
+            delegate?.modalDismissed(recipe: recipeToEdit)
+        }
     }
     
     @IBAction func setPicture(_ sender: Any) {
         self.openImagePicker()
-    }
-    @IBAction func copyButtonPressed(_ sender: UIBarButtonItem) {
-        let alert = UIAlertController(title: "Copy Recipe", message: "Duplicate Recipe?", preferredStyle: .alert)
-        let saveButton = UIAlertAction(title: "Copy", style: .default) { (action) in
-            let newRecipe = self.recipeToEdit!.copyEntireObjectGraph(context: Constants.context)
-            do {
-                try Constants.context.save()
-                self.performSegue(withIdentifier: "HomePageSegue", sender: nil)
-            }
-            catch {
-                print(error)
-            }
-        }
-        alert.addAction(saveButton)
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        alert.addAction(cancelAction)
-        self.present(alert, animated: true, completion: nil)
-        
     }
     
     func populateSelectedIngredients() {
@@ -94,18 +90,6 @@ class AddEditTableVC: UITableViewController  {
                     selectedInstructions.append(i as! Instruction)
                 }
             }
-        }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        configureUI()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        resetIngredients()
-        if let recipeToEdit = recipeToEdit {
-            delegate?.modalDismissed(recipe: recipeToEdit)
         }
     }
     
@@ -309,7 +293,7 @@ class AddEditTableVC: UITableViewController  {
             
             do {
                 try Constants.context.save()
-                //newRecipeAddDelegate?.dismissModal()
+                newRecipeAddDelegate?.dismissModal() // fetches and reloads table on home page
             }
             catch {
                 print(error)
@@ -324,7 +308,7 @@ class AddEditTableVC: UITableViewController  {
             
             recipeToEdit?.summaryDescription = recipeDescriptionTextField.text!
             recipeToEdit?.name = recipeNameTextField.text!
-            recipeToEdit?.categoryType = tempCategory
+            recipeToEdit?.categoryType = (tempCategory != nil) ? tempCategory : recipeToEdit?.categoryType
             if let time = prepTimeTextField.text {
                 recipeToEdit?.prepTime = Int64(time) ?? 0
             }
@@ -346,8 +330,7 @@ class AddEditTableVC: UITableViewController  {
                 for i in selectedInstructions {
                     recipeToEdit?.addToInstructions(i)
                 }
-            }
-            
+            }            
             
             do {
                 try Constants.context.save()
@@ -389,7 +372,6 @@ class AddEditTableVC: UITableViewController  {
 extension AddEditTableVC: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         if viewController.isKind(of: RecipeDetailsVC.self) {
-            print("leaving AddEditTableVC for RecipeDetails!")
             (viewController as? RecipeDetailsVC)?.recipeToEdit = recipeToEdit
         }
     }
@@ -448,99 +430,38 @@ extension AddEditTableVC: UIImagePickerControllerDelegate {
     }
 }
 
-extension NSManagedObject {
-
-    func copyEntireObjectGraph(context: NSManagedObjectContext) -> NSManagedObject {
-
-        var cache = Dictionary<NSManagedObjectID, NSManagedObject>()
-        return cloneObject(context: context, cache: &cache)
-
-    }
-
-    func cloneObject(context: NSManagedObjectContext, cache alreadyCopied: inout Dictionary<NSManagedObjectID, NSManagedObject>) -> NSManagedObject {
-
-        guard let entityName = self.entity.name else {
-            fatalError("source.entity.name == nil")
+extension UITextField{
+    
+    @IBInspectable var doneAccessory: Bool{
+        get{
+            return self.doneAccessory
         }
-
-        if let storedCopy = alreadyCopied[self.objectID] {
-            return storedCopy
-        }
-
-        let cloned = NSEntityDescription.insertNewObject(forEntityName: entityName, into: context)
-    alreadyCopied[self.objectID] = cloned
-
-        if let attributes = NSEntityDescription.entity(forEntityName: entityName, in: context)?.attributesByName {
-
-            for key in attributes.keys {
-                cloned.setValue(self.value(forKey: key), forKey: key)
+        set (hasDone) {
+            if hasDone{
+                addDoneButtonOnKeyboard()
             }
-
         }
-
-        if let relationships = NSEntityDescription.entity(forEntityName: entityName, in: context)?.relationshipsByName {
-
-            for (key, value) in relationships {
-
-                if value.isToMany {
-
-                    if let sourceSet = self.value(forKey: key) as? NSMutableOrderedSet {
-
-                        guard let clonedSet = cloned.value(forKey: key) as? NSMutableOrderedSet else {
-                            fatalError("Could not cast relationship \(key) to an NSMutableOrderedSet")
-                        }
-
-                        let enumerator = sourceSet.objectEnumerator()
-
-                        var nextObject = enumerator.nextObject() as? NSManagedObject
-
-                        while let relatedObject = nextObject {
-
-                            let clonedRelatedObject = relatedObject.cloneObject(context: context, cache: &alreadyCopied)
-                            clonedSet.add(clonedRelatedObject)
-                            nextObject = enumerator.nextObject() as? NSManagedObject
-
-                        }
-
-                    } else if let sourceSet = self.value(forKey: key) as? NSMutableSet {
-
-                        guard let clonedSet = cloned.value(forKey: key) as? NSMutableSet else {
-                            fatalError("Could not cast relationship \(key) to an NSMutableSet")
-                        }
-
-                        let enumerator = sourceSet.objectEnumerator()
-
-                        var nextObject = enumerator.nextObject() as? NSManagedObject
-
-                        while let relatedObject = nextObject {
-
-                            let clonedRelatedObject = relatedObject.cloneObject(context: context, cache: &alreadyCopied)
-                            clonedSet.add(clonedRelatedObject)
-                            nextObject = enumerator.nextObject() as? NSManagedObject
-
-                        }
-
-                    }
-
-                } else {
-
-                    if let relatedObject = self.value(forKey: key) as? NSManagedObject {
-
-                        let clonedRelatedObject = relatedObject.cloneObject(context: context, cache: &alreadyCopied)
-                        cloned.setValue(clonedRelatedObject, forKey: key)
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        return cloned
-
     }
-
+    
+    func addDoneButtonOnKeyboard() {
+        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        doneToolbar.barStyle = .default
+        
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let done: UIBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(self.doneButtonAction))
+        
+        let items = [flexSpace, done]
+        doneToolbar.items = items
+        doneToolbar.sizeToFit()
+        
+        self.inputAccessoryView = doneToolbar
+    }
+    
+    @objc func doneButtonAction() {
+        self.resignFirstResponder()
+    }
 }
 
+
+    
 

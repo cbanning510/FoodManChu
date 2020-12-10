@@ -83,6 +83,8 @@ class InstructionsVC: UIViewController {
             self.tableView.reloadData()
         }
         alert.addAction(submitButton)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        alert.addAction(cancelAction)
         self.present(alert, animated: true, completion: nil)
     }
     
@@ -94,7 +96,6 @@ class InstructionsVC: UIViewController {
         do {
             self.instructions = try Constants.context.fetch(fetchRequest)
             tableView.reloadData()
-            print("instructions are: \n\(instructions!)")
         } catch let err {
             print(err)
         }
@@ -175,7 +176,6 @@ extension InstructionsVC: UITableViewDelegate, UITableViewDataSource {
 extension InstructionsVC: UINavigationControllerDelegate {   
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {        
         if viewController.isKind(of: AddEditTableVC.self) {
-            print("back!!! \(tempInstructions)")
             (viewController as? AddEditTableVC)?.tempInstructions = tempInstructions
         }
     }
